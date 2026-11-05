@@ -427,7 +427,12 @@ if active_section == 'Tienda individual':
 
         def plaque_fields(pairs):
             html = []
-            for label, value, money in pairs:
+            for item in pairs:
+                if len(item) == 2:
+                    label, value = item
+                    money = False
+                else:
+                    label, value, money = item
                 html.append(f'<div class="plaque-field"><div class="plaque-field-label">{escape(str(label))}</div><div class="plaque-field-value">{escape(plaque_text(value, money))}</div></div>')
             return ''.join(html)
 

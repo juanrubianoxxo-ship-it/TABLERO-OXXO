@@ -121,6 +121,18 @@ def energy_profile(row, monthly_change=None):
     return 'energy-mid', 'ENERGÍA ESTABLE', 'Desempeño mixto · monitorear evolución', reasons, vs_u6m
 
 
+def performance_rank(row, monthly_change=None):
+    """Clasificación ejecutiva de desempeño para la placa de tienda."""
+    energy_class, energy_label, energy_note, reasons, vs_u6m = energy_profile(row, monthly_change)
+    if energy_class == 'energy-low':
+        return 'store-rank-low', 'b', 'REQUIERE ATENCIÓN', 'Desempeño bajo · priorizar revisión', energy_label, energy_note, reasons, vs_u6m
+    if energy_class == 'energy-high':
+        if (vs_u6m is not None and vs_u6m >= .15) or (monthly_change is not None and monthly_change >= .10):
+            return 'store-rank-s', 'S', 'DESEMPEÑO FORMIDABLE', 'Desempeño excepcional · mantener impulso', energy_label, energy_note, reasons, vs_u6m
+        return 'store-rank-a', 'A', 'BUEN DESEMPEÑO', 'Desempeño fuerte · mantener impulso', energy_label, energy_note, reasons, vs_u6m
+    return 'store-rank-b', 'B', 'DESEMPEÑO ESTABLE', 'Desempeño estable · monitorear evolución', energy_label, energy_note, reasons, vs_u6m
+
+
 def pct_change(current, previous):
     try:
         if pd.isna(current) or pd.isna(previous) or float(previous) == 0: return None
@@ -274,6 +286,7 @@ st.markdown('''<style>
 .store-focus-card .energy-stat-value{font-size:1rem}
 .store-focus-card .energy-status{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32)}
 @media(max-width:900px){.store-focus-card .energy-summary{grid-template-columns:repeat(2,1fr)}}
+.store-focus-card .energy-head{display:block;text-align:center}.store-focus-card .energy-name{font-size:2.25rem;letter-spacing:-.045em}.store-focus-card .energy-cr{font-size:.92rem;margin-top:.4rem}.store-focus-card .energy-status{position:absolute;right:1.45rem;top:1.35rem}.store-focus-card{min-height:360px}.store-focus-card .energy-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem}.store-focus-card .energy-summary{margin-top:1.25rem}.store-focus-card .energy-stat.mesop-highlight{border-color:rgba(253,230,138,.62);background:rgba(120,53,15,.38)}.store-focus-card .energy-stat.mesop-highlight .energy-stat-value{color:#fde68a}.store-rank-s{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#07865e 54%,#10b981 100%)!important}.store-rank-a{--energy-border:#5eead4!important;--energy-bg:linear-gradient(135deg,#064e5b 0%,#087f78 56%,#14b8a6 100%)!important}.store-rank-b{--energy-border:#fcd34d!important;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%)!important}.store-rank-low{--energy-border:#fda4af!important;--energy-bg:linear-gradient(135deg,#3b1620 0%,#7f2939 58%,#be123c 100%)!important}.rank-chip{display:inline-block;padding:.42rem .76rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-size:.78rem;font-weight:850;letter-spacing:.06em;color:#fff;margin-bottom:.6rem}
 </style>''', unsafe_allow_html=True)
 
 # Shared calculations used by the individual-store and network modules.
@@ -384,10 +397,10 @@ if active_section == 'Tienda individual':
         try:
             mesop_num = float(mesop_raw)
             if pd.isna(mesop_num): raise ValueError
-            mesop_display = f'{mesop_num:,.0f}'; mesop_color = '#B7791F' if mesop_num > 100 else '#344054'; mesop_note = 'MESOP > 100' if mesop_num > 100 else 'MESOP'
+            mesop_display = f'{mesop_num:,.0f}'; mesop_color = '#fde68a' if mesop_num > 100 else '#ecfdf5'; mesop_note = 'MESOP > 100 · DESTACADO' if mesop_num > 100 else 'MESOP'
         except (TypeError, ValueError):
-            mesop_display = str(mesop_raw); mesop_color = '#667085'; mesop_note = 'MESOP'
-        energy_class, energy_label, energy_note, energy_reasons, vs_u6m = energy_profile(selected, change)
+            mesop_display = str(mesop_raw); mesop_color = '#ecfdf5'; mesop_note = 'MESOP'
+        rank_class, rank_code, rank_label, rank_note, energy_label, energy_note, energy_reasons, vs_u6m = performance_rank(selected, change)
         energy_reason_text = ' · '.join(energy_reasons) if energy_reasons else 'Sin variación suficiente para clasificar'
         st.markdown('#### Placa de energía comercial')
         st.markdown('<div class="energy-key"><span class="energy-dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>Buen desempeño / luminoso <span class="energy-dot" style="background:#fbbf24"></span>Estable <span class="energy-dot" style="background:#64748b"></span>Requiere atención / opaco</div>', unsafe_allow_html=True)
@@ -395,12 +408,14 @@ if active_section == 'Tienda individual':
         contrib_display = display_value(selected.get('CONTRIBUCION UM'), True)
         change_display = f'{change:+.1%}' if change is not None else 'Sin dato'
         vs_u6m_display = f'{vs_u6m:+.1%}' if vs_u6m is not None else 'Sin dato'
-        ficha_html = f'''<div class="energy-card store-focus-card"><div class="energy-head"><div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div></div><div class="energy-note">{energy_note} · {energy_reason_text}</div></div>'''
-        ficha_left, ficha_right = st.columns([3.8, 1.15])
-        with ficha_left:
-            st.markdown(ficha_html, unsafe_allow_html=True)
-        with ficha_right:
-            st.markdown(f'''<div class="mesop-card"><div class="small">{mesop_note}</div><div class="mesop-number" style="color:{mesop_color}">{mesop_display}</div><div class="small">Indicador MESOP de Book</div></div>''', unsafe_allow_html=True)
+        area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))
+        area_display = display_value(area_value)
+        apertura_value = selected.get('FECHA APE', 'Sin dato')
+        apertura_display = apertura_value.strftime('%d/%m/%Y') if isinstance(apertura_value, pd.Timestamp) else str(apertura_value)
+        batting_value = selected.get('%BATTING')
+        batting_display = f'{float(batting_value):.1%}' if pd.notna(batting_value) else 'Sin dato'
+        ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div></div>'''
+        st.markdown(ficha_html, unsafe_allow_html=True)
         st.markdown('#### Indicadores rápidos')
         fact_cols = st.columns(6)
         area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))

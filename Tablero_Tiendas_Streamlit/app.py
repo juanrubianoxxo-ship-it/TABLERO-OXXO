@@ -291,7 +291,7 @@ st.markdown('''<style>
 .store-focus-card .energy-stat-value{font-size:1rem}
 .store-focus-card .energy-status{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32)}
 @media(max-width:900px){.store-focus-card .energy-summary{grid-template-columns:repeat(2,1fr)}}
-.store-focus-card .energy-head{display:block;text-align:center}.store-focus-card .energy-name{font-size:2.25rem;letter-spacing:-.045em}.store-focus-card .energy-cr{font-size:.92rem;margin-top:.4rem}.store-focus-card .energy-status{position:absolute;right:1.45rem;top:1.35rem}.store-focus-card{min-height:360px}.store-focus-card .energy-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem}.store-focus-card .energy-summary{margin-top:1.25rem}.store-focus-card .energy-stat.mesop-highlight{border-color:rgba(253,230,138,.62);background:rgba(120,53,15,.38)}.store-focus-card .plaque-sections{margin-top:1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;text-align:left;position:relative;z-index:1}.store-focus-card .plaque-section{padding:.75rem;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(0,0,0,.16)}.store-focus-card .plaque-section-wide{grid-column:1/-1}.store-focus-card .plaque-section-title{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:850;color:#bbf7d0;margin-bottom:.45rem}.store-focus-card .plaque-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.28rem .65rem;max-height:260px;overflow:auto}.store-focus-card .plaque-field{min-width:0;border-bottom:1px solid rgba(255,255,255,.1);padding:.2rem 0}.store-focus-card .plaque-field-label{font-size:.64rem;color:rgba(236,253,245,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-field-value{font-size:.76rem;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-all-fields{max-height:350px;overflow:auto}@media(max-width:1050px){.store-focus-card .plaque-sections{grid-template-columns:1fr 1fr}}@media(max-width:700px){.store-focus-card .plaque-sections{grid-template-columns:1fr}.store-focus-card .plaque-section-wide{grid-column:auto}}.store-rank-s{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#07865e 54%,#10b981 100%)!important}.store-rank-a{--energy-border:#5eead4!important;--energy-bg:linear-gradient(135deg,#064e5b 0%,#087f78 56%,#14b8a6 100%)!important}.store-rank-b{--energy-border:#fcd34d!important;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%)!important}.store-rank-low{--energy-border:#fda4af!important;--energy-bg:linear-gradient(135deg,#3b1620 0%,#7f2939 58%,#be123c 100%)!important}.rank-chip{display:inline-block;padding:.42rem .76rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-size:.78rem;font-weight:850;letter-spacing:.06em;color:#fff;margin-bottom:.6rem}
+.store-focus-card .energy-head{display:block;text-align:center}.store-focus-card .energy-name{font-size:2.25rem;letter-spacing:-.045em}.store-focus-card .energy-cr{font-size:.92rem;margin-top:.4rem}.store-focus-card .energy-status{position:absolute;right:1.45rem;top:1.35rem}.store-focus-card{min-height:360px}.store-focus-card .energy-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem}.store-focus-card .energy-summary{margin-top:1.25rem}.store-focus-card .energy-stat.mesop-highlight{border-color:rgba(253,230,138,.62);background:rgba(120,53,15,.38)}.store-focus-card .plaque-sections{margin-top:1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;text-align:left;position:relative;z-index:1}.store-focus-card .plaque-section{padding:.75rem;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(0,0,0,.16)}.store-focus-card .plaque-section-wide{grid-column:1/-1}.store-focus-card .plaque-section-title{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:850;color:#bbf7d0;margin-bottom:.45rem}.store-focus-card .plaque-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.28rem .65rem;max-height:260px;overflow:auto}.store-focus-card .plaque-fields-six{grid-template-columns:repeat(3,minmax(0,1fr));max-height:none}.store-focus-card .plaque-field{min-width:0;border-bottom:1px solid rgba(255,255,255,.1);padding:.2rem 0}.store-focus-card .plaque-field-label{font-size:.64rem;color:rgba(236,253,245,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-field-value{font-size:.76rem;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-all-fields{max-height:350px;overflow:auto}@media(max-width:1050px){.store-focus-card .plaque-sections{grid-template-columns:1fr 1fr}}@media(max-width:700px){.store-focus-card .plaque-fields-six{grid-template-columns:repeat(2,minmax(0,1fr))}.store-focus-card .plaque-sections{grid-template-columns:1fr}.store-focus-card .plaque-section-wide{grid-column:auto}}.store-rank-s{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#07865e 54%,#10b981 100%)!important}.store-rank-a{--energy-border:#5eead4!important;--energy-bg:linear-gradient(135deg,#064e5b 0%,#087f78 56%,#14b8a6 100%)!important}.store-rank-b{--energy-border:#fcd34d!important;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%)!important}.store-rank-low{--energy-border:#fda4af!important;--energy-bg:linear-gradient(135deg,#3b1620 0%,#7f2939 58%,#be123c 100%)!important}.rank-chip{display:inline-block;padding:.42rem .76rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-size:.78rem;font-weight:850;letter-spacing:.06em;color:#fff;margin-bottom:.6rem}
 </style>''', unsafe_allow_html=True)
 
 # Shared calculations used by the individual-store and network modules.
@@ -449,11 +449,18 @@ if active_section == 'Tienda individual':
             ('Variación vs mes previo', last_sale_change_label, False), ('Venta OUM / Book', selected.get('VENTAS OUM'), True),
             ('Venta U6M', selected.get('VU6M'), True), ('Variación vs U6M', vs_u6m_display, False),
         ])
+        quick_fields = plaque_fields([
+            ('Apertura', apertura_display, False), ('Área venta', area_value, False),
+            ('Tráfico UM', selected.get('TRAFICO UM'), False), ('Ticket UM', selected.get('TICKET UM'), True),
+            ('Ventas UM', selected.get('VENTAS OUM'), True), ('Contribución UM', selected.get('CONTRIBUCION UM'), True),
+        ])
         performance_fields = plaque_fields([
-            ('Contribución UM', selected.get('CONTRIBUCION UM'), True), ('Margen UM', selected.get('MARGEN UM'), True),
-            ('Renta UM', selected.get('RENTA'), True), ('Batting', batting_display, False),
-            ('MESOP', mesop_display, False), ('Tráfico UM', selected.get('TRAFICO UM'), False),
-            ('Ticket UM', selected.get('TICKET UM'), True), ('Área de venta', area_value, False),
+            ('Venta último mes', last_sale_value, True), ('Variación mensual', last_sale_change_label, False),
+            ('Margen UM', selected.get('MARGEN UM'), True), ('Renta UM', selected.get('RENTA'), True),
+            ('Batting', batting_display, False), ('MESOP', mesop_display, False),
+            ('Contribución UM', selected.get('CONTRIBUCION UM'), True),
+            ('Tráfico UM', selected.get('TRAFICO UM'), False), ('Ticket UM', selected.get('TICKET UM'), True),
+            ('Área de venta', area_value, False),
         ])
         def book_pairs(mapping):
             pairs = []
@@ -475,60 +482,9 @@ if active_section == 'Tienda individual':
             ('Formato', 'TIE26'), ('Segmento', 'SEG26'), ('CR', 'CR'),
         ]))
 
-        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div></div>'''
+        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Indicadores rápidos</div><div class="plaque-fields plaque-fields-six">{quick_fields}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields plaque-fields-six">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div></div>'''
         ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div>{plaque_sections}</div>'''
         st.markdown(ficha_html, unsafe_allow_html=True)
-        st.markdown('#### Indicadores rápidos')
-        fact_cols = st.columns(6)
-        area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))
-        facts = [('Apertura', selected.get('FECHA APE','Sin dato'), False), ('Área venta', area_value, False), ('Tráfico UM', selected.get('TRAFICO UM','Sin dato'), False), ('Ticket UM', selected.get('TICKET UM','Sin dato'), True), ('Ventas UM', selected.get('VENTAS OUM','Sin dato'), True), ('Contribución UM', selected.get('CONTRIBUCION UM','Sin dato'), True)]
-        for col, (label, value, money) in zip(fact_cols, facts):
-            if isinstance(value, pd.Timestamp): value = value.strftime('%d/%m/%Y')
-            col.markdown(f'<div class="fact"><div class="fact-label">{label}</div><div class="fact-value">{display_value(value, money)}</div></div>', unsafe_allow_html=True)
-        st.markdown('#### Desempeño operativo')
-        m1,m2,m3,m4 = st.columns(4)
-        m1.metric('Venta último mes', display_value(last_sale['VENTAS'], True) if last_sale is not None else 'Sin dato', f'{change:.1%}' if change is not None else None)
-        m2.metric('Margen UM', display_value(selected.get('MARGEN UM'), True))
-        m3.metric('Renta UM', display_value(selected.get('RENTA'), True))
-        m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
-        # Ficha interactiva completa: toda la fila original de Book/JUN, organizada por temas y con búsqueda.
-        st.markdown('#### Centro de datos de la tienda')
-        st.markdown('<div class="store-data-hint">Explora la información disponible de Book por categoría.</div>', unsafe_allow_html=True)
-        def value_for_table(value):
-            if pd.isna(value): return 'Sin dato'
-            if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
-            return str(value)
-
-        raw_fields = pd.DataFrame({'Campo': [str(c) for c in selected.index], 'Valor': [value_for_table(v) for v in selected.values]})
-        def fields_by_keywords(keywords):
-            mask = raw_fields['Campo'].str.upper().apply(lambda name: any(k in name for k in keywords))
-            return raw_fields[mask].copy()
-
-        identity_fields = fields_by_keywords(['CR','NAME','ESTADO','SEG26','TIE26','DISTINTIVO','ENERGIA'])
-        location_fields = fields_by_keywords(['ZONA','DEPARTAMENTO','MUN','UPZ','COMUNA','ESTRATO','DIRECCION','BARRIO','LOCALIDAD','Y','X','COORD'])
-        finance_fields = fields_by_keywords(['VENTA','CONTRIB','MARGEN','RENTA','TICKET','BATTING','MESOP','U6M','UM','TRAFICO','TRU6'])
-        operation_fields = fields_by_keywords(['FECHA','APERT','AREA','PISO','TIPO','PARQUE','GENERADOR','FORMATO','LOCAL','OPER'])
-        categorized = set(identity_fields['Campo']) | set(location_fields['Campo']) | set(finance_fields['Campo']) | set(operation_fields['Campo'])
-        other_fields = raw_fields[~raw_fields['Campo'].isin(categorized)].copy()
-
-        data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad'])
-        with data_tabs[0]:
-            summary_cols = st.columns(3)
-            summary_cols[0].metric('Campos disponibles', f'{len(raw_fields):,}')
-            summary_cols[1].metric('Datos con valor', f'{int((raw_fields.Valor != "Sin dato").sum()):,}')
-            summary_cols[2].metric('CR de tienda', str(selected.get('CR', selected_cr)))
-            st.dataframe(identity_fields if not identity_fields.empty else raw_fields.head(12), hide_index=True, use_container_width=True, height=360)
-        with data_tabs[1]:
-            op_left, op_right = st.columns(2)
-            with op_left:
-                st.markdown('**Ubicación y clasificación**')
-                st.dataframe(location_fields if not location_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
-            with op_right:
-                st.markdown('**Operación y apertura**')
-                st.dataframe(operation_fields if not operation_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
-        with data_tabs[2]:
-            st.markdown('**Indicadores comerciales y financieros disponibles en Book/JUN**')
-            st.dataframe(finance_fields if not finance_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=480)
         if not selected_sales.empty:
             chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})
             if not selected_con.empty:

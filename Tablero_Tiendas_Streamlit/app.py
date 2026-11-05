@@ -276,6 +276,19 @@ st.markdown('''<style>
 @media(max-width:900px){.store-focus-card .energy-summary{grid-template-columns:repeat(2,1fr)}}
 </style>''', unsafe_allow_html=True)
 
+# Shared calculations used by the individual-store and network modules.
+status_counts = book['ESTADO_NORMALIZADO'].value_counts()
+total = len(book)
+latest = ventas['FECHA'].max() if not ventas.empty else None
+latest_sales = ventas[ventas['FECHA'] == latest] if latest is not None else ventas
+avg_sales = latest_sales['VENTAS'].mean() if not latest_sales.empty else 0
+avg_con = con[con['FECHA'] == latest]['CONTRIBUCION'].mean() if latest is not None and not con.empty else 0
+u6m_sales = pd.to_numeric(book.get('VU6M', pd.Series(dtype=float)), errors='coerce').mean()
+u6m_con = pd.to_numeric(book.get('CONTRIBUCION U6M', pd.Series(dtype=float)), errors='coerce').mean()
+sales_delta = pct_change(avg_sales, u6m_sales)
+con_delta = pct_change(avg_con, u6m_con)
+latest_label = latest.strftime('%b %Y').upper() if latest is not None else 'SIN PERIODO'
+
 if active_section == 'Tienda individual':
     st.markdown('<div class="section-band"><div><h2>Resumen de la red</h2><p>Lectura rápida del estado operativo y financiero de la vista actual</p></div></div>', unsafe_allow_html=True)
     status_counts = book['ESTADO_NORMALIZADO'].value_counts()

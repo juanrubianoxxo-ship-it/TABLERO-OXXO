@@ -449,26 +449,21 @@ if active_section == 'Tienda individual':
             ('Variación vs mes previo', last_sale_change_label, False), ('Venta OUM / Book', selected.get('VENTAS OUM'), True),
             ('Venta U6M', selected.get('VU6M'), True), ('Variación vs U6M', vs_u6m_display, False),
         ])
-        quick_fields = plaque_fields([
-            ('Apertura', apertura_display, False), ('Área venta', area_value, False),
-            ('Tráfico UM', selected.get('TRAFICO UM'), False), ('Ticket UM', selected.get('TICKET UM'), True),
-            ('Ventas UM', selected.get('VENTAS OUM'), True), ('Contribución UM', selected.get('CONTRIBUCION UM'), True),
+        commercial_fields = plaque_fields([
+            ('Venta OUM / Book', selected.get('VENTAS OUM'), True), ('Venta U6M', selected.get('VU6M'), True),
+            ('Venta último mes', last_sale_value, True), ('Venta mes previo', previous_sale_value, True),
+            ('Variación mensual', last_sale_change_label, False), ('Variación vs U6M', vs_u6m_display, False),
+            ('Contribución UM', selected.get('CONTRIBUCION UM'), True), ('Margen UM', selected.get('MARGEN UM'), True),
+            ('Renta UM', selected.get('RENTA'), True),
         ])
-        performance_fields = plaque_fields([
-            ('Venta último mes', last_sale_value, True), ('Variación mensual', last_sale_change_label, False),
-            ('Margen UM', selected.get('MARGEN UM'), True), ('Renta UM', selected.get('RENTA'), True),
+        operation_fields = plaque_fields([
+            ('Apertura', apertura_display, False), ('Área de venta', area_value, False),
+            ('Tráfico UM', selected.get('TRAFICO UM'), False), ('Ticket UM', selected.get('TICKET UM'), True),
             ('Batting', batting_display, False), ('MESOP', mesop_display, False),
-            ('Contribución UM', selected.get('CONTRIBUCION UM'), True),
-            ('Tráfico UM', selected.get('TRAFICO UM'), False), ('Ticket UM', selected.get('TICKET UM'), True),
-            ('Área de venta', area_value, False),
+            ('Estado', selected.get('ESTADO_NORMALIZADO', selected.get('ESTADO'))), ('Formato', format_label),
+            ('Segmento', segment_label), ('Generador', selected.get('GENERADOR')),
+            ('Tipo de local', selected.get('TIPO DE LOCAL')),
         ])
-        def book_pairs(mapping):
-            pairs = []
-            for label, column in mapping:
-                if column in selected.index and pd.notna(selected.get(column)) and str(selected.get(column)).strip():
-                    pairs.append((label, selected.get(column)))
-            return pairs
-
         location_fields_html = plaque_fields(book_pairs([
             ('Zona', 'ZONA'), ('Departamento', 'DEPARTAMENTO'), ('Municipio', 'MUN'),
             ('UPZ', 'UPZ'), ('Comuna', 'COMUNA'), ('Estrato', 'ESTRATO'),
@@ -482,8 +477,8 @@ if active_section == 'Tienda individual':
             ('Formato', 'TIE26'), ('Segmento', 'SEG26'), ('CR', 'CR'),
         ]))
 
-        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Indicadores rápidos</div><div class="plaque-fields plaque-fields-six">{quick_fields}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields plaque-fields-six">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div></div>'''
-        ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div>{plaque_sections}</div>'''
+        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Comercial · datos de Book</div><div class="plaque-fields plaque-fields-six">{commercial_fields}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Operación · datos de Book</div><div class="plaque-fields plaque-fields-six">{operation_fields}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Ubicación · datos de Book</div><div class="plaque-fields plaque-fields-six">{location_fields_html}</div></div></div>'''
+        ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS OUM</div><div class="energy-stat-value">{display_value(selected.get('VENTAS OUM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VENTA ÚLTIMO MES</div><div class="energy-stat-value">{display_value(last_sale_value, True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div>{plaque_sections}</div>'''
         st.markdown(ficha_html, unsafe_allow_html=True)
         if not selected_sales.empty:
             chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})

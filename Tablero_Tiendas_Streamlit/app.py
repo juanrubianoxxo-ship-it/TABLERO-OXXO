@@ -10,7 +10,7 @@ st.markdown('''<style>
 .block-container{padding-top:1.1rem;padding-bottom:2.5rem}.stTabs [data-baseweb=tab-list]{gap:.35rem}.stTabs [data-baseweb=tab]{padding:.65rem .95rem;border-radius:10px 10px 0 0;font-weight:650}.stTabs [aria-selected="true"]{background:#eef4ff;color:#175cd3}.section-kicker{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#667085;font-weight:750;margin:.8rem 0 .25rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#101828;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
 .layer-plate{padding:.6rem .75rem;border-radius:10px;margin:.35rem 0;box-shadow:0 5px 14px rgba(16,24,40,.13), inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s ease}.layer-plate:hover{transform:translateY(-2px)}
 .store-card{padding:1.1rem 1.25rem;border-radius:16px;border:1px solid #d0d5dd;background:linear-gradient(135deg,#ffffff,#f8fafc);box-shadow:0 10px 26px rgba(16,24,40,.12), inset 0 1px 0 rgba(255,255,255,.95);margin:.35rem 0 1rem}
-.store-title{font-size:1.35rem;font-weight:750;color:#101828;margin:0}.store-subtitle{color:#667085;margin:.2rem 0 .7rem}.badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;color:#fff;font-weight:700;font-size:.82rem;box-shadow:0 3px 8px rgba(16,24,40,.16)}.fact{padding:.65rem .8rem;background:#f8fafc;border-radius:9px;border:1px solid #eaecf0;box-shadow:0 4px 12px rgba(16,24,40,.06)}.fact-label{font-size:.76rem;color:#667085}.fact-value{font-weight:650;color:#101828;margin-top:.15rem}.mesop-card{height:100%;padding:1rem;border-radius:16px;text-align:center;background:linear-gradient(145deg,#fffdf5,#fff7d6);border:1px solid #f2c94c;box-shadow:0 10px 26px rgba(242,183,5,.22), inset 0 1px 0 rgba(255,255,255,.9)}.mesop-number{font-size:3.2rem;line-height:1;font-weight:850;color:#9a6700;margin:.6rem 0}.signal-list{max-height:520px;overflow-y:auto;padding-right:.25rem}
+.store-title{font-size:1.35rem;font-weight:750;color:#101828;margin:0}.store-subtitle{color:#667085;margin:.2rem 0 .7rem}.badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;color:#fff;font-weight:700;font-size:.82rem;box-shadow:0 3px 8px rgba(16,24,40,.16)}.fact{padding:.65rem .8rem;background:#f8fafc;border-radius:9px;border:1px solid #eaecf0;box-shadow:0 4px 12px rgba(16,24,40,.06)}.fact-label{font-size:.76rem;color:#667085}.fact-value{font-weight:650;color:#101828;margin-top:.15rem}.mesop-card{height:100%;padding:1rem;border-radius:16px;text-align:center;background:linear-gradient(145deg,#fffdf5,#fff7d6);border:1px solid #f2c94c;box-shadow:0 10px 26px rgba(242,183,5,.22), inset 0 1px 0 rgba(255,255,255,.9)}.mesop-number{font-size:3.2rem;line-height:1;font-weight:850;color:#9a6700;margin:.6rem 0}.energy-card{position:relative;overflow:hidden;padding:1.35rem 1.45rem;border-radius:22px;margin:.45rem 0 1rem;border:1px solid var(--energy-border);background:var(--energy-bg);color:var(--energy-text);box-shadow:var(--energy-shadow);transition:transform .2s ease,box-shadow .2s ease}.energy-card:hover{transform:translateY(-3px);box-shadow:var(--energy-shadow-hover)}.energy-card::after{content:'';position:absolute;top:-70px;right:-45px;width:190px;height:190px;border-radius:50%;background:var(--energy-orb);filter:blur(2px);opacity:.65}.energy-card.energy-high{--energy-border:#86efac;--energy-bg:linear-gradient(135deg,#062e24 0%,#0b5d45 52%,#0f8f67 100%);--energy-text:#ecfdf5;--energy-shadow:0 0 0 1px rgba(52,211,153,.16),0 0 25px rgba(16,185,129,.42),0 14px 32px rgba(6,78,59,.3);--energy-shadow-hover:0 0 0 1px rgba(134,239,172,.3),0 0 38px rgba(16,185,129,.65),0 18px 38px rgba(6,78,59,.38);--energy-orb:radial-gradient(circle,#86efac 0%,rgba(52,211,153,.24) 36%,transparent 70%)}.energy-card.energy-mid{--energy-border:#fcd34d;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%);--energy-text:#fffbeb;--energy-shadow:0 0 0 1px rgba(251,191,36,.12),0 0 18px rgba(245,158,11,.24),0 14px 30px rgba(92,50,4,.24);--energy-shadow-hover:0 0 0 1px rgba(252,211,77,.22),0 0 27px rgba(245,158,11,.4),0 18px 35px rgba(92,50,4,.32);--energy-orb:radial-gradient(circle,#fde68a 0%,rgba(251,191,36,.18) 38%,transparent 70%)}.energy-card.energy-low{--energy-border:#64748b;--energy-bg:linear-gradient(135deg,#202938 0%,#364152 58%,#475569 100%);--energy-text:#e2e8f0;--energy-shadow:0 8px 20px rgba(15,23,42,.26);--energy-shadow-hover:0 10px 24px rgba(15,23,42,.34);--energy-orb:radial-gradient(circle,#94a3b8 0%,rgba(100,116,139,.12) 38%,transparent 70%)}.energy-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.energy-name{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}.energy-cr{font-size:.8rem;opacity:.8;margin-top:.18rem}.energy-status{display:inline-block;padding:.42rem .72rem;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.12);font-size:.74rem;font-weight:800;letter-spacing:.06em;white-space:nowrap}.energy-badges{position:relative;z-index:1;margin:.85rem 0 .65rem}.energy-badges .badge{box-shadow:0 2px 9px rgba(0,0,0,.2)}.energy-summary{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:.75rem}.energy-stat{padding:.65rem .75rem;border-radius:12px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12)}.energy-stat-label{font-size:.7rem;opacity:.78}.energy-stat-value{font-size:1.08rem;font-weight:800;margin-top:.15rem}.energy-note{position:relative;z-index:1;margin-top:.8rem;font-size:.8rem;opacity:.88}.energy-key{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;margin:.2rem 0 1rem;color:#667085;font-size:.8rem}.energy-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.signal-list{max-height:520px;overflow-y:auto;padding-right:.25rem}
 </style>''', unsafe_allow_html=True)
 st.title('Control integral de tiendas')
 st.caption('Centro de control retail · Book (JUN) + LibroVentas · Fuente única: OneDrive/SharePoint.')
@@ -74,6 +74,32 @@ def format_profile(row) -> tuple[str, str, str]:
 
 def state_color(state: str) -> str:
     return {'ABIERTA':'#111111', 'CERRADA':'#D92D20', 'EN OBRA':'#D9F3FF', 'FIRMADA':'#98A2B3'}.get(state, '#667085')
+
+
+def energy_profile(row, monthly_change=None):
+    """Clasifica la energía comercial de la tienda con señales explicables."""
+    state = text_upper(row.get('ESTADO_NORMALIZADO', row.get('ESTADO', '')))
+    sales_um = pd.to_numeric(pd.Series([row.get('VENTAS OUM')]), errors='coerce').iloc[0]
+    sales_u6m = pd.to_numeric(pd.Series([row.get('VU6M')]), errors='coerce').iloc[0]
+    contribution = pd.to_numeric(pd.Series([row.get('CONTRIBUCION UM')]), errors='coerce').iloc[0]
+    vs_u6m = (sales_um / sales_u6m - 1) if pd.notna(sales_um) and pd.notna(sales_u6m) and sales_u6m else None
+    score = 0
+    reasons = []
+    if vs_u6m is not None:
+        if vs_u6m >= .05: score += 1; reasons.append(f'Ventas {vs_u6m:+.1%} vs U6M')
+        elif vs_u6m <= -.10: score -= 1; reasons.append(f'Ventas {vs_u6m:+.1%} vs U6M')
+    if monthly_change is not None:
+        if monthly_change >= .05: score += 1; reasons.append(f'Último mes {monthly_change:+.1%}')
+        elif monthly_change <= -.10: score -= 1; reasons.append(f'Último mes {monthly_change:+.1%}')
+    if pd.notna(contribution):
+        if contribution > 0: score += 1
+        elif contribution < 0: score -= 1
+    if 'ABIERTA' not in state: score = min(score, 0)
+    if score >= 2:
+        return 'energy-high', 'ALTA ENERGÍA', 'Desempeño fuerte · mantener impulso', reasons, vs_u6m
+    if score <= -1:
+        return 'energy-low', 'REQUIERE ATENCIÓN', 'Desempeño bajo · revisar operación', reasons, vs_u6m
+    return 'energy-mid', 'ENERGÍA ESTABLE', 'Desempeño mixto · monitorear evolución', reasons, vs_u6m
 
 
 def pct_change(current, previous):
@@ -266,9 +292,18 @@ elif selected_label:
         mesop_display = f'{mesop_num:,.0f}'; mesop_color = '#B7791F' if mesop_num > 100 else '#344054'; mesop_note = 'MESOP > 100' if mesop_num > 100 else 'MESOP'
     except (TypeError, ValueError):
         mesop_display = str(mesop_raw); mesop_color = '#667085'; mesop_note = 'MESOP'
+    energy_class, energy_label, energy_note, energy_reasons, vs_u6m = energy_profile(selected, change)
+    energy_reason_text = ' · '.join(energy_reasons) if energy_reasons else 'Sin variación suficiente para clasificar'
+    st.markdown('#### Placa de energía comercial')
+    st.markdown('<div class="energy-key"><span class="energy-dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>Buen desempeño / luminoso <span class="energy-dot" style="background:#fbbf24"></span>Estable <span class="energy-dot" style="background:#64748b"></span>Requiere atención / opaco</div>', unsafe_allow_html=True)
+    sales_display = display_value(selected.get('VENTAS OUM'), True)
+    contrib_display = display_value(selected.get('CONTRIBUCION UM'), True)
+    change_display = f'{change:+.1%}' if change is not None else 'Sin dato'
+    vs_u6m_display = f'{vs_u6m:+.1%}' if vs_u6m is not None else 'Sin dato'
+    ficha_html = f'''<div class="energy-card {energy_class}"><div class="energy-head"><div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div></div><div class="energy-note">{energy_note} · {energy_reason_text}</div></div>'''
     ficha_left, ficha_right = st.columns([3.8, 1.15])
     with ficha_left:
-        st.markdown(f'''<div class="store-card" style="border-left:8px solid {status_bg}"><div class="store-title">{selected.get('NAME', 'Sin nombre')} {badges}</div><div class="store-subtitle">CR: {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div>''', unsafe_allow_html=True)
+        st.markdown(ficha_html, unsafe_allow_html=True)
     with ficha_right:
         st.markdown(f'''<div class="mesop-card"><div class="small">{mesop_note}</div><div class="mesop-number" style="color:{mesop_color}">{mesop_display}</div><div class="small">Indicador MESOP de Book</div></div>''', unsafe_allow_html=True)
     st.markdown('#### Indicadores rápidos')

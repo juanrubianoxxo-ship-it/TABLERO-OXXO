@@ -28,7 +28,7 @@ st.markdown('''<style>
 [data-testid=stMetric]{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;box-shadow:0 5px 16px rgba(20,45,90,.05)}[data-testid=stMetricLabel]{color:var(--muted)!important}[data-testid=stMetricValue]{color:var(--ink)!important}
 .stTabs [data-baseweb=tab-list]{background:#e8eef8;border-radius:14px;padding:.28rem;gap:.25rem}.stTabs [data-baseweb=tab]{border-radius:10px;padding:.7rem .9rem;color:#52627e;font-size:.82rem;font-weight:750}.stTabs [aria-selected=true]{background:#fff;color:#1d4ed8;box-shadow:0 3px 10px rgba(37,99,235,.14)}
 [data-testid=stExpander]{border:1px solid var(--line);border-radius:14px;background:#fff}.stDataFrame{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-@media(max-width:900px){.overview-grid,.energy-ribbon{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:1.7rem}.block-container{padding-left:1rem;padding-right:1rem}}
+@media(max-width:900px){.overview-grid,.energy-ribbon{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:1.7rem}.block-container{padding-left:1rem;padding-right:1rem}}.store-data-tabs [data-baseweb=tab-list]{background:#f0f4fa}.store-data-hint{padding:.65rem .85rem;border-radius:10px;background:#eef6ff;border:1px solid #c7ddff;color:#24508c;font-size:.8rem;margin:.4rem 0 .8rem}
 </style>''', unsafe_allow_html=True)
 
 st.markdown('''<div class="dashboard-hero"><div class="hero-eyebrow">OXXO · RETAIL CONTROL ROOM</div><div class="hero-title">Pulso de la red de tiendas</div><p class="hero-copy">Una vista operativa para detectar dónde está el crecimiento, qué tiendas necesitan atención y cómo se mueve el negocio mes a mes.</p><div class="hero-meta"><span class="hero-pill">Book / JUN</span><span class="hero-pill">LibroVentas</span><span class="hero-pill">Actualización automática desde OneDrive</span></div></div>''', unsafe_allow_html=True)
@@ -348,12 +348,53 @@ elif selected_label:
     m2.metric('Margen UM', display_value(selected.get('MARGEN UM'), True))
     m3.metric('Renta UM', display_value(selected.get('RENTA'), True))
     m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
-    with st.expander('Ver ficha completa · todos los datos de la tienda', expanded=False):
-        left, right = st.columns(2)
-        left_fields = ['CR','ESTADO_NORMALIZADO','ZONA','DEPARTAMENTO','MUN','UPZ/COMUNA','ESTRATO','TIPO DE LOCAL','PARQUEADERO','SEG26','TIE26']
-        right_fields = ['TRAFICO UM','TRU6','TICKET UM','TICKET U6M','VENTAS OUM','VU6M','CONTRIBUCION UM','CONTRIBUCION U6M','MARGEN UM','MARGEN U6M','RENTA','RU6M']
-        left.dataframe(pd.DataFrame({'Campo':left_fields, 'Valor':[selected.get(c, 'Sin dato') for c in left_fields]}), hide_index=True, use_container_width=True)
-        right.dataframe(pd.DataFrame({'Campo':right_fields, 'Valor':[display_value(selected.get(c), c not in ['TRAFICO UM','TRU6']) for c in right_fields]}), hide_index=True, use_container_width=True)
+    # Ficha interactiva completa: toda la fila original de Book/JUN, organizada por temas y con búsqueda.
+    st.markdown('#### Centro de datos de la tienda')
+    st.markdown('<div class="store-data-hint">Explora la información por categoría o entra en “Todos los datos” para consultar cada columna original de esta tienda.</div>', unsafe_allow_html=True)
+    def value_for_table(value):
+        if pd.isna(value): return 'Sin dato'
+        if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
+        return str(value)
+
+    raw_fields = pd.DataFrame({'Campo': [str(c) for c in selected.index], 'Valor': [value_for_table(v) for v in selected.values]})
+    def fields_by_keywords(keywords):
+        mask = raw_fields['Campo'].str.upper().apply(lambda name: any(k in name for k in keywords))
+        return raw_fields[mask].copy()
+
+    identity_fields = fields_by_keywords(['CR','NAME','ESTADO','SEG26','TIE26','DISTINTIVO','ENERGIA'])
+    location_fields = fields_by_keywords(['ZONA','DEPARTAMENTO','MUN','UPZ','COMUNA','ESTRATO','DIRECCION','BARRIO','LOCALIDAD','Y','X','COORD'])
+    finance_fields = fields_by_keywords(['VENTA','CONTRIB','MARGEN','RENTA','TICKET','BATTING','MESOP','U6M','UM','TRAFICO','TRU6'])
+    operation_fields = fields_by_keywords(['FECHA','APERT','AREA','PISO','TIPO','PARQUE','GENERADOR','FORMATO','LOCAL','OPER'])
+    categorized = set(identity_fields['Campo']) | set(location_fields['Campo']) | set(finance_fields['Campo']) | set(operation_fields['Campo'])
+    other_fields = raw_fields[~raw_fields['Campo'].isin(categorized)].copy()
+
+    data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad','Todos los datos'])
+    with data_tabs[0]:
+        summary_cols = st.columns(3)
+        summary_cols[0].metric('Campos disponibles', f'{len(raw_fields):,}')
+        summary_cols[1].metric('Datos con valor', f'{int((raw_fields.Valor != "Sin dato").sum()):,}')
+        summary_cols[2].metric('CR de tienda', str(selected.get('CR', selected_cr)))
+        st.dataframe(identity_fields if not identity_fields.empty else raw_fields.head(12), hide_index=True, use_container_width=True, height=360)
+    with data_tabs[1]:
+        op_left, op_right = st.columns(2)
+        with op_left:
+            st.markdown('**Ubicación y clasificación**')
+            st.dataframe(location_fields if not location_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
+        with op_right:
+            st.markdown('**Operación y apertura**')
+            st.dataframe(operation_fields if not operation_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
+    with data_tabs[2]:
+        st.markdown('**Indicadores comerciales y financieros disponibles en Book/JUN**')
+        st.dataframe(finance_fields if not finance_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=480)
+    with data_tabs[3]:
+        search_fields = st.text_input('Buscar dentro de todos los datos', placeholder='Ej. renta, municipio, área, fecha…', key=f'field_search_{selected_cr}')
+        all_data = raw_fields.copy()
+        if search_fields:
+            q = search_fields.strip().lower()
+            all_data = all_data[all_data.astype(str).apply(lambda col: col.str.lower().str.contains(q, na=False)).any(axis=1)]
+        st.caption(f'Mostrando {len(all_data):,} de {len(raw_fields):,} campos originales de la tienda.')
+        st.dataframe(all_data, hide_index=True, use_container_width=True, height=520)
+        st.download_button('Descargar ficha completa de esta tienda', raw_fields.to_csv(index=False).encode('utf-8-sig'), f'ficha_tienda_{selected_cr}.csv', 'text/csv', key=f'download_store_{selected_cr}')
     if not selected_sales.empty:
         chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})
         if not selected_con.empty:

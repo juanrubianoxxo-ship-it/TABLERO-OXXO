@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px
+from html import escape
 import streamlit as st
 from src.analysis import load_book, load_book_sheets, load_libro_sheets, historic_to_long, merge_book_status, sudden_alerts, status_bucket
 from src.onedrive import download_excel
@@ -183,6 +184,7 @@ def decorate_book_cached(raw_book: pd.DataFrame) -> pd.DataFrame:
     book[['DISTINTIVO','DISTINTIVO_COLOR','DISTINTIVO_TEXTO']] = book.apply(lambda row: pd.Series(modifier_profile(row)), axis=1)
     book[['SEGMENTO_VISUAL','SEGMENTO_COLOR','SEGMENTO_TEXTO']] = book.apply(lambda row: pd.Series(segment_profile(row)), axis=1)
     book[['FORMATO_VISUAL','FORMATO_COLOR','FORMATO_TEXTO']] = book.apply(lambda row: pd.Series(format_profile(row)), axis=1)
+    book[['CATEGORIA_CLASE','CATEGORIA_DESEMPENO','CATEGORIA_LABEL']] = book.apply(lambda row: pd.Series(performance_rank(row)[:3]), axis=1)
     return book
 
 
@@ -244,6 +246,8 @@ with st.sidebar:
         return st.multiselect(label, values, key=f'filter_{column}')
 
     selected_statuses = choose('ESTADO_NORMALIZADO', 'Estado operativo')
+    selected_performance = choose('CATEGORIA_DESEMPENO', 'Categoría de desempeño: S / A / B / b')
+    st.caption('S · formidable  |  A · bueno  |  B · estable  |  b · atención')
     selected_segments = choose('SEGMENTO_VISUAL', 'Segmento: BASE / HOGAR / RECESO')
     selected_generations = choose('TIE26', 'Generación')
     selected_departments = choose('DEPARTAMENTO', 'Departamento')
@@ -255,6 +259,7 @@ with st.sidebar:
 
     filters = {
         'ESTADO_NORMALIZADO': selected_statuses,
+        'CATEGORIA_DESEMPENO': selected_performance,
         'SEGMENTO_VISUAL': selected_segments, 'TIE26': selected_generations,
         'DEPARTAMENTO': selected_departments, 'MUN': selected_municipalities,
         'ESTRATO': selected_strata, 'GENERADOR': selected_generator,
@@ -286,7 +291,7 @@ st.markdown('''<style>
 .store-focus-card .energy-stat-value{font-size:1rem}
 .store-focus-card .energy-status{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32)}
 @media(max-width:900px){.store-focus-card .energy-summary{grid-template-columns:repeat(2,1fr)}}
-.store-focus-card .energy-head{display:block;text-align:center}.store-focus-card .energy-name{font-size:2.25rem;letter-spacing:-.045em}.store-focus-card .energy-cr{font-size:.92rem;margin-top:.4rem}.store-focus-card .energy-status{position:absolute;right:1.45rem;top:1.35rem}.store-focus-card{min-height:360px}.store-focus-card .energy-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem}.store-focus-card .energy-summary{margin-top:1.25rem}.store-focus-card .energy-stat.mesop-highlight{border-color:rgba(253,230,138,.62);background:rgba(120,53,15,.38)}.store-focus-card .energy-stat.mesop-highlight .energy-stat-value{color:#fde68a}.store-rank-s{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#07865e 54%,#10b981 100%)!important}.store-rank-a{--energy-border:#5eead4!important;--energy-bg:linear-gradient(135deg,#064e5b 0%,#087f78 56%,#14b8a6 100%)!important}.store-rank-b{--energy-border:#fcd34d!important;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%)!important}.store-rank-low{--energy-border:#fda4af!important;--energy-bg:linear-gradient(135deg,#3b1620 0%,#7f2939 58%,#be123c 100%)!important}.rank-chip{display:inline-block;padding:.42rem .76rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-size:.78rem;font-weight:850;letter-spacing:.06em;color:#fff;margin-bottom:.6rem}
+.store-focus-card .energy-head{display:block;text-align:center}.store-focus-card .energy-name{font-size:2.25rem;letter-spacing:-.045em}.store-focus-card .energy-cr{font-size:.92rem;margin-top:.4rem}.store-focus-card .energy-status{position:absolute;right:1.45rem;top:1.35rem}.store-focus-card{min-height:360px}.store-focus-card .energy-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem}.store-focus-card .energy-summary{margin-top:1.25rem}.store-focus-card .energy-stat.mesop-highlight{border-color:rgba(253,230,138,.62);background:rgba(120,53,15,.38)}.store-focus-card .plaque-sections{margin-top:1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;text-align:left;position:relative;z-index:1}.store-focus-card .plaque-section{padding:.75rem;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(0,0,0,.16)}.store-focus-card .plaque-section-wide{grid-column:1/-1}.store-focus-card .plaque-section-title{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:850;color:#bbf7d0;margin-bottom:.45rem}.store-focus-card .plaque-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.28rem .65rem;max-height:260px;overflow:auto}.store-focus-card .plaque-field{min-width:0;border-bottom:1px solid rgba(255,255,255,.1);padding:.2rem 0}.store-focus-card .plaque-field-label{font-size:.64rem;color:rgba(236,253,245,.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-field-value{font-size:.76rem;color:#fff;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.store-focus-card .plaque-all-fields{max-height:350px;overflow:auto}@media(max-width:1050px){.store-focus-card .plaque-sections{grid-template-columns:1fr 1fr}}@media(max-width:700px){.store-focus-card .plaque-sections{grid-template-columns:1fr}.store-focus-card .plaque-section-wide{grid-column:auto}}.store-rank-s{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#07865e 54%,#10b981 100%)!important}.store-rank-a{--energy-border:#5eead4!important;--energy-bg:linear-gradient(135deg,#064e5b 0%,#087f78 56%,#14b8a6 100%)!important}.store-rank-b{--energy-border:#fcd34d!important;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%)!important}.store-rank-low{--energy-border:#fda4af!important;--energy-bg:linear-gradient(135deg,#3b1620 0%,#7f2939 58%,#be123c 100%)!important}.rank-chip{display:inline-block;padding:.42rem .76rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font-size:.78rem;font-weight:850;letter-spacing:.06em;color:#fff;margin-bottom:.6rem}
 </style>''', unsafe_allow_html=True)
 
 # Shared calculations used by the individual-store and network modules.
@@ -414,7 +419,52 @@ if active_section == 'Tienda individual':
         apertura_display = apertura_value.strftime('%d/%m/%Y') if isinstance(apertura_value, pd.Timestamp) else str(apertura_value)
         batting_value = selected.get('%BATTING')
         batting_display = f'{float(batting_value):.1%}' if pd.notna(batting_value) else 'Sin dato'
-        ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div></div>'''
+
+        def plaque_text(value, money=False):
+            if pd.isna(value): return 'Sin dato'
+            if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
+            return display_value(value, money)
+
+        def plaque_fields(pairs):
+            html = []
+            for label, value, money in pairs:
+                html.append(f'<div class="plaque-field"><div class="plaque-field-label">{escape(str(label))}</div><div class="plaque-field-value">{escape(plaque_text(value, money))}</div></div>')
+            return ''.join(html)
+
+        last_sale_value = last_sale.get('VENTAS') if last_sale is not None else None
+        previous_sale_value = prev_sale.get('VENTAS') if prev_sale is not None else None
+        last_sale_date = last_sale.get('FECHA') if last_sale is not None else None
+        previous_sale_date = prev_sale.get('FECHA') if prev_sale is not None else None
+        last_sale_label = plaque_text(last_sale_date)
+        previous_sale_label = plaque_text(previous_sale_date)
+        last_sale_change_label = f'{change:+.1%}' if change is not None else 'Sin dato'
+        last_month_fields = plaque_fields([
+            ('Último mes', last_sale_label, False), ('Venta último mes', last_sale_value, True),
+            ('Mes previo', previous_sale_label, False), ('Venta mes previo', previous_sale_value, True),
+            ('Variación vs mes previo', last_sale_change_label, False), ('Venta OUM / Book', selected.get('VENTAS OUM'), True),
+            ('Venta U6M', selected.get('VU6M'), True), ('Variación vs U6M', vs_u6m_display, False),
+        ])
+        performance_fields = plaque_fields([
+            ('Contribución UM', selected.get('CONTRIBUCION UM'), True), ('Margen UM', selected.get('MARGEN UM'), True),
+            ('Renta UM', selected.get('RENTA'), True), ('Batting', batting_display, False),
+            ('MESOP', mesop_display, False), ('Tráfico UM', selected.get('TRAFICO UM'), False),
+            ('Ticket UM', selected.get('TICKET UM'), True), ('Área de venta', area_value, False),
+        ])
+        location_fields_html = plaque_fields([
+            ('Zona', selected.get('ZONA')), ('Departamento', selected.get('DEPARTAMENTO')), ('Municipio', selected.get('MUN')),
+            ('UPZ / Comuna', selected.get('UPZ', selected.get('COMUNA'))), ('Estrato', selected.get('ESTRATO')),
+            ('Dirección', selected.get('DIRECCION')), ('Barrio', selected.get('BARRIO')), ('Localidad', selected.get('LOCALIDAD')),
+            ('Coordenada X', selected.get('X')), ('Coordenada Y', selected.get('Y')),
+        ])
+        operation_fields_html = plaque_fields([
+            ('Estado', selected.get('ESTADO_NORMALIZADO', selected.get('ESTADO'))), ('Fecha apertura', apertura_display, False),
+            ('Generador', selected.get('GENERADOR')), ('Tipo de local', selected.get('TIPO DE LOCAL')),
+            ('Piso de venta', selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA'))), ('Formato', format_label),
+            ('Segmento', segment_label), ('CR', selected.get('CR')),
+        ])
+        all_fields_html = plaque_fields([(str(field), value, False) for field, value in selected.items()])
+        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Todos los datos originales de la tienda</div><div class="plaque-fields plaque-all-fields">{all_fields_html}</div></div></div>'''
+        ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div>{plaque_sections}</div>'''
         st.markdown(ficha_html, unsafe_allow_html=True)
         st.markdown('#### Indicadores rápidos')
         fact_cols = st.columns(6)

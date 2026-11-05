@@ -4,7 +4,7 @@ import streamlit as st
 from src.analysis import load_book, load_book_sheets, load_libro_sheets, historic_to_long, merge_book_status, sudden_alerts, status_bucket
 from src.onedrive import download_excel
 
-st.set_page_config(page_title='OXXO · Control Room', page_icon='📊', layout='wide')
+st.set_page_config(page_title='OXXO · Control Room 2.0', page_icon='📊', layout='wide', initial_sidebar_state='expanded')
 px.defaults.template = 'plotly_white'
 
 st.markdown('''<style>
@@ -28,10 +28,10 @@ st.markdown('''<style>
 [data-testid=stMetric]{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;box-shadow:0 5px 16px rgba(20,45,90,.05)}[data-testid=stMetricLabel]{color:var(--muted)!important}[data-testid=stMetricValue]{color:var(--ink)!important}
 .stTabs [data-baseweb=tab-list]{background:#e8eef8;border-radius:14px;padding:.28rem;gap:.25rem}.stTabs [data-baseweb=tab]{border-radius:10px;padding:.7rem .9rem;color:#52627e;font-size:.82rem;font-weight:750}.stTabs [aria-selected=true]{background:#fff;color:#1d4ed8;box-shadow:0 3px 10px rgba(37,99,235,.14)}
 [data-testid=stExpander]{border:1px solid var(--line);border-radius:14px;background:#fff}.stDataFrame{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-@media(max-width:900px){.overview-grid,.energy-ribbon{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:1.7rem}.block-container{padding-left:1rem;padding-right:1rem}}.store-data-tabs [data-baseweb=tab-list]{background:#f0f4fa}.store-data-hint{padding:.65rem .85rem;border-radius:10px;background:#eef6ff;border:1px solid #c7ddff;color:#24508c;font-size:.8rem;margin:.4rem 0 .8rem}
+@media(max-width:900px){.overview-grid,.energy-ribbon{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:1.7rem}.block-container{padding-left:1rem;padding-right:1rem}}.store-data-tabs [data-baseweb=tab-list]{background:#f0f4fa}.store-data-hint{padding:.65rem .85rem;border-radius:10px;background:#eef6ff;border:1px solid #c7ddff;color:#24508c;font-size:.8rem;margin:.4rem 0 .8rem}.stDownloadButton>button{background:#0b1736;color:#fff;border:0;font-weight:700}.stDownloadButton>button:hover{background:#1d4ed8;color:#fff}.stButton>button:hover{border-color:#2563eb;color:#1d4ed8}.sidebar-brand{padding:.8rem 0 1rem;border-bottom:1px solid #314879;margin-bottom:1rem}.sidebar-brand-title{font-size:1.05rem;font-weight:850;letter-spacing:-.02em}.sidebar-brand-sub{font-size:.74rem;color:#a9badb;margin-top:.2rem}.refresh-chip{display:inline-block;padding:.28rem .55rem;border-radius:999px;background:#e8f7ef;color:#087443;border:1px solid #a6e3c0;font-size:.74rem;font-weight:750}.muted-callout{padding:.8rem 1rem;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:.84rem}
 </style>''', unsafe_allow_html=True)
 
-st.markdown('''<div class="dashboard-hero"><div class="hero-eyebrow">OXXO · RETAIL CONTROL ROOM</div><div class="hero-title">Pulso de la red de tiendas</div><p class="hero-copy">Una vista operativa para detectar dónde está el crecimiento, qué tiendas necesitan atención y cómo se mueve el negocio mes a mes.</p><div class="hero-meta"><span class="hero-pill">Book / JUN</span><span class="hero-pill">LibroVentas</span><span class="hero-pill">Actualización automática desde OneDrive</span></div></div>''', unsafe_allow_html=True)
+st.markdown('''<div class="dashboard-hero"><div class="hero-eyebrow">OXXO · RETAIL CONTROL ROOM 2.0</div><div class="hero-title">Pulso de la red de tiendas</div><p class="hero-copy">Una vista operativa para decidir más rápido: identifica crecimiento, prioriza riesgos y entiende el movimiento de cada tienda desde una sola pantalla.</p><div class="hero-meta"><span class="hero-pill">Book / JUN</span><span class="hero-pill">LibroVentas</span><span class="hero-pill">Actualización automática desde OneDrive</span><span class="hero-pill">Vista ejecutiva + detalle operativo</span></div></div>''', unsafe_allow_html=True)
 
 
 
@@ -179,8 +179,10 @@ def merge_book_status_cached(book_frame: pd.DataFrame, long_frame: pd.DataFrame)
     return merge_book_status(book_frame, long_frame)
 
 with st.sidebar:
-    st.markdown('### OXXO / CONTROL ROOM')
-    st.caption('Panel operativo de tiendas')
+    st.markdown('<div class="sidebar-brand"><div class="sidebar-brand-title">OXXO / CONTROL ROOM</div><div class="sidebar-brand-sub">Panel operativo de tiendas · versión 2.0</div></div>', unsafe_allow_html=True)
+    if st.button('↻  Actualizar datos', use_container_width=True, help='Limpia la caché y vuelve a leer los archivos desde OneDrive'):
+        st.cache_data.clear()
+        st.rerun()
     st.header('Conexión de datos')
     book_url = secret_value('ONEDRIVE_BOOK_URL')
     sales_url = secret_value('ONEDRIVE_SALES_URL')
@@ -218,6 +220,7 @@ except Exception as e:
 
 # Filters
 with st.sidebar:
+    st.markdown('<div class="muted-callout">Usa los filtros para construir una vista ejecutiva o bajar hasta una tienda específica. Los gráficos y descargas respetan la selección.</div>', unsafe_allow_html=True)
     st.header('Explorar la red')
     store_query = st.text_input('Buscar tienda por CR o nombre', placeholder='Ej. 1234 o Reforma', key='store_query')
     def choose(column, label):
@@ -274,6 +277,8 @@ u6m_sales = pd.to_numeric(book.get('VU6M', pd.Series(dtype=float)), errors='coer
 u6m_con = pd.to_numeric(book.get('CONTRIBUCION U6M', pd.Series(dtype=float)), errors='coerce').mean()
 sales_delta = pct_change(avg_sales, u6m_sales)
 con_delta = pct_change(avg_con, u6m_con)
+latest_label = latest.strftime('%b %Y').upper() if latest is not None else 'SIN PERIODO'
+st.markdown(f'<div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:-.25rem 0 .85rem"><span class="small">Vista filtrada · {total:,} tiendas · periodo de referencia {latest_label}</span><span class="refresh-chip">● Datos listos para análisis</span></div>', unsafe_allow_html=True)
 indicators = [
     ('Tiendas', total, None, False),
     ('Abiertas', int(status_counts.get('ABIERTA', 0)), None, False),
@@ -439,7 +444,7 @@ elif selected_label:
         st.plotly_chart(px.line(chart_data, x='FECHA', y=[c for c in ['Ventas','Contribución'] if c in chart_data], markers=True, title=f'Histórico de {selected.get("NAME", selected_cr)}'), use_container_width=True)
 
 # Tabs
-t1,t2,t3,t4,t5,t6 = st.tabs(['01 · Cobertura','02 · Finanzas','03 · Señales','04 · Tiendas','05 · Calidad','06 · Comparar'])
+t1,t2,t3,t4,t5,t6 = st.tabs(['01 · Resumen operativo','02 · Finanzas','03 · Alertas','04 · Directorio','05 · Calidad','06 · Comparador'])
 with t1:
     st.markdown('<div class="section-band"><div><h2>Mapa operativo</h2><p>Distribución, cobertura y productividad por clasificación</p></div></div>', unsafe_allow_html=True)
     c1,c2 = st.columns(2)
@@ -610,7 +615,11 @@ with t4:
         st.dataframe(detail.style.apply(paint_store_row, axis=1), use_container_width=True, hide_index=True)
     else:
         st.dataframe(detail, use_container_width=True, hide_index=True)
-    st.download_button('Descargar detalle filtrado CSV', detail.to_csv(index=False).encode('utf-8-sig'), 'detalle_tiendas.csv', 'text/csv')
+    dl1, dl2 = st.columns([1, 1])
+    with dl1:
+        st.download_button('Descargar detalle filtrado CSV', detail.to_csv(index=False).encode('utf-8-sig'), 'detalle_tiendas.csv', 'text/csv', use_container_width=True)
+    with dl2:
+        st.download_button('Descargar vista ejecutiva CSV', book.to_csv(index=False).encode('utf-8-sig'), 'vista_ejecutiva_oxxo.csv', 'text/csv', use_container_width=True)
 
 with t5:
     st.markdown('<div class="section-band"><div><h2>Calidad y cobertura</h2><p>Confianza en fuentes, campos y periodos disponibles</p></div></div>', unsafe_allow_html=True)

@@ -455,20 +455,27 @@ if active_section == 'Tienda individual':
             ('MESOP', mesop_display, False), ('Tráfico UM', selected.get('TRAFICO UM'), False),
             ('Ticket UM', selected.get('TICKET UM'), True), ('Área de venta', area_value, False),
         ])
-        location_fields_html = plaque_fields([
-            ('Zona', selected.get('ZONA')), ('Departamento', selected.get('DEPARTAMENTO')), ('Municipio', selected.get('MUN')),
-            ('UPZ / Comuna', selected.get('UPZ', selected.get('COMUNA'))), ('Estrato', selected.get('ESTRATO')),
-            ('Dirección', selected.get('DIRECCION')), ('Barrio', selected.get('BARRIO')), ('Localidad', selected.get('LOCALIDAD')),
-            ('Coordenada X', selected.get('X')), ('Coordenada Y', selected.get('Y')),
-        ])
-        operation_fields_html = plaque_fields([
-            ('Estado', selected.get('ESTADO_NORMALIZADO', selected.get('ESTADO'))), ('Fecha apertura', apertura_display, False),
-            ('Generador', selected.get('GENERADOR')), ('Tipo de local', selected.get('TIPO DE LOCAL')),
-            ('Piso de venta', selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA'))), ('Formato', format_label),
-            ('Segmento', segment_label), ('CR', selected.get('CR')),
-        ])
-        all_fields_html = plaque_fields([(str(field), value, False) for field, value in selected.items()])
-        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div><div class="plaque-section plaque-section-wide"><div class="plaque-section-title">Todos los datos originales de la tienda</div><div class="plaque-fields plaque-all-fields">{all_fields_html}</div></div></div>'''
+        def book_pairs(mapping):
+            pairs = []
+            for label, column in mapping:
+                if column in selected.index and pd.notna(selected.get(column)) and str(selected.get(column)).strip():
+                    pairs.append((label, selected.get(column)))
+            return pairs
+
+        location_fields_html = plaque_fields(book_pairs([
+            ('Zona', 'ZONA'), ('Departamento', 'DEPARTAMENTO'), ('Municipio', 'MUN'),
+            ('UPZ', 'UPZ'), ('Comuna', 'COMUNA'), ('Estrato', 'ESTRATO'),
+            ('Dirección', 'DIRECCION'), ('Barrio', 'BARRIO'), ('Localidad', 'LOCALIDAD'),
+            ('Coordenada X', 'X'), ('Coordenada Y', 'Y'),
+        ]))
+        operation_fields_html = plaque_fields(book_pairs([
+            ('Estado', 'ESTADO_NORMALIZADO'), ('Estado original', 'ESTADO'), ('Fecha apertura', 'FECHA APE'),
+            ('Generador', 'GENERADOR'), ('Tipo de local', 'TIPO DE LOCAL'),
+            ('Piso de venta', 'PISO DE VENTA'), ('Área piso de venta', 'AREA PISO DE VENTA'),
+            ('Formato', 'TIE26'), ('Segmento', 'SEG26'), ('CR', 'CR'),
+        ]))
+
+        plaque_sections = f'''<div class="plaque-sections"><div class="plaque-section"><div class="plaque-section-title">Último mes y variación</div><div class="plaque-fields">{last_month_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Desempeño operativo</div><div class="plaque-fields">{performance_fields}</div></div><div class="plaque-section"><div class="plaque-section-title">Ubicación y operación</div><div class="plaque-fields">{location_fields_html}{operation_fields_html}</div></div></div>'''
         ficha_html = f'''<div class="energy-card store-focus-card {rank_class}"><div class="energy-head"><div class="rank-chip">CATEGORÍA {rank_code} · {rank_label}</div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div><div class="energy-stat mesop-highlight"><div class="energy-stat-label">{mesop_note}</div><div class="energy-stat-value" style="color:{mesop_color}">{mesop_display}</div></div><div class="energy-stat"><div class="energy-stat-label">ÁREA DE VENTA</div><div class="energy-stat-value">{area_display}</div></div><div class="energy-stat"><div class="energy-stat-label">BATTING</div><div class="energy-stat-value">{batting_display}</div></div><div class="energy-stat"><div class="energy-stat-label">APERTURA</div><div class="energy-stat-value">{apertura_display}</div></div></div><div class="energy-note">{rank_note} · {energy_reason_text}</div>{plaque_sections}</div>'''
         st.markdown(ficha_html, unsafe_allow_html=True)
         st.markdown('#### Indicadores rápidos')
@@ -486,7 +493,7 @@ if active_section == 'Tienda individual':
         m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
         # Ficha interactiva completa: toda la fila original de Book/JUN, organizada por temas y con búsqueda.
         st.markdown('#### Centro de datos de la tienda')
-        st.markdown('<div class="store-data-hint">Explora la información por categoría o entra en “Todos los datos” para consultar cada columna original de esta tienda.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="store-data-hint">Explora la información disponible de Book por categoría.</div>', unsafe_allow_html=True)
         def value_for_table(value):
             if pd.isna(value): return 'Sin dato'
             if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
@@ -504,7 +511,7 @@ if active_section == 'Tienda individual':
         categorized = set(identity_fields['Campo']) | set(location_fields['Campo']) | set(finance_fields['Campo']) | set(operation_fields['Campo'])
         other_fields = raw_fields[~raw_fields['Campo'].isin(categorized)].copy()
 
-        data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad','Todos los datos'])
+        data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad'])
         with data_tabs[0]:
             summary_cols = st.columns(3)
             summary_cols[0].metric('Campos disponibles', f'{len(raw_fields):,}')
@@ -522,15 +529,6 @@ if active_section == 'Tienda individual':
         with data_tabs[2]:
             st.markdown('**Indicadores comerciales y financieros disponibles en Book/JUN**')
             st.dataframe(finance_fields if not finance_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=480)
-        with data_tabs[3]:
-            search_fields = st.text_input('Buscar dentro de todos los datos', placeholder='Ej. renta, municipio, área, fecha…', key=f'field_search_{selected_cr}')
-            all_data = raw_fields.copy()
-            if search_fields:
-                q = search_fields.strip().lower()
-                all_data = all_data[all_data.astype(str).apply(lambda col: col.str.lower().str.contains(q, na=False)).any(axis=1)]
-            st.caption(f'Mostrando {len(all_data):,} de {len(raw_fields):,} campos originales de la tienda.')
-            st.dataframe(all_data, hide_index=True, use_container_width=True, height=520)
-            st.download_button('Descargar ficha completa de esta tienda', raw_fields.to_csv(index=False).encode('utf-8-sig'), f'ficha_tienda_{selected_cr}.csv', 'text/csv', key=f'download_store_{selected_cr}')
         if not selected_sales.empty:
             chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})
             if not selected_con.empty:

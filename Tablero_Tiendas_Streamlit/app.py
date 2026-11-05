@@ -8,7 +8,7 @@ st.set_page_config(page_title='OXXO · Control Room 2.0', page_icon='📊', layo
 px.defaults.template = 'plotly_white'
 
 st.markdown('''<style>
-.block-container{padding-top:1.1rem;padding-bottom:2.5rem}.stTabs [data-baseweb=tab-list]{gap:.35rem}.stTabs [data-baseweb=tab]{padding:.65rem .95rem;border-radius:10px 10px 0 0;font-weight:650}.stTabs [aria-selected="true"]{background:#eef4ff;color:#175cd3}.section-kicker{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#667085;font-weight:750;margin:.8rem 0 .25rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#e8f1fb;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
+.block-container{padding-top:1.1rem;padding-bottom:2.5rem}.stTabs [data-baseweb=tab-list]{gap:.35rem}.stTabs [data-baseweb=tab]{padding:.65rem .95rem;border-radius:10px 10px 0 0;font-weight:650}.stTabs [aria-selected="true"]{background:#eef4ff;color:#175cd3}.section-kicker{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#667085;font-weight:750;margin:.8rem 0 .25rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#101828;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
 .layer-plate{padding:.6rem .75rem;border-radius:10px;margin:.35rem 0;box-shadow:0 5px 14px rgba(16,24,40,.13), inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s ease}.layer-plate:hover{transform:translateY(-2px)}
 .store-card{padding:1.1rem 1.25rem;border-radius:16px;border:1px solid #d0d5dd;background:linear-gradient(135deg,#ffffff,#f8fafc);box-shadow:0 10px 26px rgba(16,24,40,.12), inset 0 1px 0 rgba(255,255,255,.95);margin:.35rem 0 1rem}
 .store-title{font-size:1.35rem;font-weight:750;color:#e8f1fb;margin:0}.store-subtitle{color:#667085;margin:.2rem 0 .7rem}.badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;color:#fff;font-weight:700;font-size:.82rem;box-shadow:0 3px 8px rgba(16,24,40,.16)}.fact{padding:.65rem .8rem;background:#f8fafc;border-radius:9px;border:1px solid #eaecf0;box-shadow:0 4px 12px rgba(16,24,40,.06)}.fact-label{font-size:.76rem;color:#667085}.fact-value{font-weight:650;color:#e8f1fb;margin-top:.15rem}.mesop-card{height:100%;padding:1rem;border-radius:16px;text-align:center;background:linear-gradient(145deg,#fffdf5,#fff7d6);border:1px solid #f2c94c;box-shadow:0 10px 26px rgba(242,183,5,.22), inset 0 1px 0 rgba(255,255,255,.9)}.mesop-number{font-size:3.2rem;line-height:1;font-weight:850;color:#9a6700;margin:.6rem 0}.energy-card{position:relative;overflow:hidden;padding:1.35rem 1.45rem;border-radius:22px;margin:.45rem 0 1rem;border:1px solid var(--energy-border);background:var(--energy-bg);color:var(--energy-text);box-shadow:var(--energy-shadow);transition:transform .2s ease,box-shadow .2s ease}.energy-card:hover{transform:translateY(-3px);box-shadow:var(--energy-shadow-hover)}.energy-card::after{content:'';position:absolute;top:-70px;right:-45px;width:190px;height:190px;border-radius:50%;background:var(--energy-orb);filter:blur(2px);opacity:.65}.energy-card.energy-high{--energy-border:#86efac;--energy-bg:linear-gradient(135deg,#062e24 0%,#0b5d45 52%,#0f8f67 100%);--energy-text:#ecfdf5;--energy-shadow:0 0 0 1px rgba(52,211,153,.16),0 0 25px rgba(16,185,129,.42),0 14px 32px rgba(6,78,59,.3);--energy-shadow-hover:0 0 0 1px rgba(134,239,172,.3),0 0 38px rgba(16,185,129,.65),0 18px 38px rgba(6,78,59,.38);--energy-orb:radial-gradient(circle,#86efac 0%,rgba(52,211,153,.24) 36%,transparent 70%)}.energy-card.energy-mid{--energy-border:#fcd34d;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%);--energy-text:#fffbeb;--energy-shadow:0 0 0 1px rgba(251,191,36,.12),0 0 18px rgba(245,158,11,.24),0 14px 30px rgba(92,50,4,.24);--energy-shadow-hover:0 0 0 1px rgba(252,211,77,.22),0 0 27px rgba(245,158,11,.4),0 18px 35px rgba(92,50,4,.32);--energy-orb:radial-gradient(circle,#fde68a 0%,rgba(251,191,36,.18) 38%,transparent 70%)}.energy-card.energy-low{--energy-border:#64748b;--energy-bg:linear-gradient(135deg,#202938 0%,#364152 58%,#475569 100%);--energy-text:#e2e8f0;--energy-shadow:0 8px 20px rgba(15,23,42,.26);--energy-shadow-hover:0 10px 24px rgba(15,23,42,.34);--energy-orb:radial-gradient(circle,#94a3b8 0%,rgba(100,116,139,.12) 38%,transparent 70%)}.energy-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.energy-name{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}.energy-cr{font-size:.8rem;opacity:.8;margin-top:.18rem}.energy-status{display:inline-block;padding:.42rem .72rem;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.12);font-size:.74rem;font-weight:800;letter-spacing:.06em;white-space:nowrap}.energy-badges{position:relative;z-index:1;margin:.85rem 0 .65rem}.energy-badges .badge{box-shadow:0 2px 9px rgba(0,0,0,.2)}.energy-summary{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:.75rem}.energy-stat{padding:.65rem .75rem;border-radius:12px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12)}.energy-stat-label{font-size:.7rem;opacity:.78}.energy-stat-value{font-size:1.08rem;font-weight:800;margin-top:.15rem}.energy-note{position:relative;z-index:1;margin-top:.8rem;font-size:.8rem;opacity:.88}.energy-key{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;margin:.2rem 0 1rem;color:#667085;font-size:.8rem}.energy-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.signal-list{max-height:520px;overflow-y:auto;padding-right:.25rem}
@@ -184,7 +184,7 @@ with st.sidebar:
         st.cache_data.clear()
         st.rerun()
     st.markdown('<div class="tech-divider"></div><div class="nav-kicker">Navegación</div>', unsafe_allow_html=True)
-    active_section = st.radio('Módulo', ['Resumen operativo','Finanzas','Alertas','Directorio','Calidad','Comparador'], index=0, label_visibility='collapsed', key='active_section')
+    active_section = st.radio('Módulo', ['Tienda individual','Resumen operativo','Finanzas','Alertas','Directorio','Calidad','Comparador'], index=0, label_visibility='collapsed', key='active_section')
     st.markdown('<div class="nav-help">Selecciona un módulo para concentrarte en una sola lectura. Los filtros de red permanecen disponibles abajo.</div>', unsafe_allow_html=True)
     st.header('Conexión de datos')
     book_url = secret_value('ONEDRIVE_BOOK_URL')
@@ -268,183 +268,191 @@ visible_crs = set(book['CR'].astype(str))
 ventas = ventas_all[ventas_all['CR'].astype(str).isin(visible_crs)].copy()
 con = con_all[con_all['CR'].astype(str).isin(visible_crs)].copy() if not con_all.empty else pd.DataFrame()
 
-# Overview
-st.markdown('<div class="section-band"><div><h2>Resumen de la red</h2><p>Lectura rápida del estado operativo y financiero de la vista actual</p></div></div>', unsafe_allow_html=True)
-status_counts = book['ESTADO_NORMALIZADO'].value_counts()
-total = len(book)
-latest = ventas['FECHA'].max() if not ventas.empty else None
-latest_sales = ventas[ventas['FECHA'] == latest] if latest is not None else ventas
-avg_sales = latest_sales['VENTAS'].mean() if not latest_sales.empty else 0
-avg_con = con[con['FECHA'] == latest]['CONTRIBUCION'].mean() if latest is not None and not con.empty else 0
-u6m_sales = pd.to_numeric(book.get('VU6M', pd.Series(dtype=float)), errors='coerce').mean()
-u6m_con = pd.to_numeric(book.get('CONTRIBUCION U6M', pd.Series(dtype=float)), errors='coerce').mean()
-sales_delta = pct_change(avg_sales, u6m_sales)
-con_delta = pct_change(avg_con, u6m_con)
-latest_label = latest.strftime('%b %Y').upper() if latest is not None else 'SIN PERIODO'
-st.markdown(f'<div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:-.25rem 0 .85rem"><span class="small">Vista filtrada · {total:,} tiendas · periodo de referencia {latest_label}</span><span class="refresh-chip">● Datos listos para análisis</span></div>', unsafe_allow_html=True)
-indicators = [
-    ('Tiendas', total, None, False),
-    ('Abiertas', int(status_counts.get('ABIERTA', 0)), None, False),
-    ('Cerradas', int(status_counts.get('CERRADA', 0)), None, False),
-    ('En obra', int(status_counts.get('EN OBRA', 0)), None, False),
-    ('Firmadas', int(status_counts.get('FIRMADA', 0)), None, False),
-    ('Venta último mes', avg_sales, sales_delta, True),
-    ('Contribución último mes', avg_con, con_delta, True),
-    ('Venta promedio U6M', u6m_sales, None, True),
-]
-st.markdown('##### Indicadores de cobertura')
-count_cols = st.columns(5)
-for col, (label, value, delta, money) in zip(count_cols, indicators[:5]):
-    share = '100.0% del total' if label == 'Tiendas' else f'{value / max(total, 1):.1%} del total'
-    col.markdown(f'<div class="kpi"><div class="small">{label}</div><h3>{display_value(value, money)}</h3><div class="small">{share}</div></div>', unsafe_allow_html=True)
-st.markdown('##### Indicadores financieros')
-financial_cols = st.columns(3)
-for col, (label, value, delta, money) in zip(financial_cols, indicators[5:]):
-    delta_text = f'{delta:+.1%} vs U6M' if delta is not None else ''
-    col.markdown(f'<div class="kpi"><div class="small">{label}</div><h3>{display_value(value, money)}</h3><div class="small">{delta_text}</div></div>', unsafe_allow_html=True)
+st.markdown('''<style>
+.store-focus-card{--energy-border:#86efac!important;--energy-bg:linear-gradient(135deg,#064e3b 0%,#087f5b 55%,#10b981 100%)!important;--energy-text:#ecfdf5!important;--energy-shadow:0 0 0 1px rgba(52,211,153,.18),0 0 24px rgba(16,185,129,.32),0 16px 34px rgba(6,78,59,.28)!important;--energy-shadow-hover:0 0 0 1px rgba(134,239,172,.34),0 0 34px rgba(16,185,129,.54),0 20px 42px rgba(6,78,59,.36)!important}
+.store-focus-card .energy-summary{grid-template-columns:repeat(4,1fr)}
+.store-focus-card .energy-stat-value{font-size:1rem}
+.store-focus-card .energy-status{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.32)}
+@media(max-width:900px){.store-focus-card .energy-summary{grid-template-columns:repeat(2,1fr)}}
+</style>''', unsafe_allow_html=True)
 
-st.markdown('#### Capas independientes de clasificación')
-layer_cols = st.columns(3)
-for col, title, label_col, bg_col, fg_col in zip(
-    layer_cols,
-    ['Estado operativo', 'Segmentación', 'Formato / tipo'],
-    ['ESTADO_ETIQUETA', 'SEGMENTO_VISUAL', 'FORMATO_VISUAL'],
-    ['ESTADO_COLOR', 'SEGMENTO_COLOR', 'FORMATO_COLOR'],
-    ['ESTADO_TEXTO', 'SEGMENTO_TEXTO', 'FORMATO_TEXTO'],
-):
-    counts = book[label_col].value_counts().rename_axis('Etiqueta').reset_index(name='Tiendas')
-    col.markdown(f'**{title}**')
-    for _, item in counts.head(8).iterrows():
-        label = item['Etiqueta']
-        sample = book[book[label_col].eq(label)].iloc[0]
-        bg, fg = sample[bg_col], sample[fg_col]
-        share = int(item['Tiendas']) / max(total, 1)
-        col.markdown(f'<div class="layer-plate" style="display:flex;justify-content:space-between;align-items:center;background:{bg};color:{fg};font-weight:650"><span>{label}</span><span>{int(item["Tiendas"]):,} <small>({share:.1%})</small></span></div>', unsafe_allow_html=True)
-legend = [('ABIERTA','#111111','#FFFFFF'),('FIRMADA','#98A2B3','#101828'),('EN OBRA','#D9F3FF','#0077B6'),('CERRADA','#D92D20','#FFFFFF'),('(BA)','#D6BBFB','#3B0764'),('-R','#54208A','#FFFFFF'),('TMCB','#E31B23','#FFD400'),('EXP','#003B73','#FFFFFF'),('RECESO','#B42318','#FFFFFF'),('HOGAR','#111111','#FFFFFF'),('BASE','#FFD400','#111111')]
-legend_html = ' '.join([f'<span style="display:inline-block;background:{bg};color:{fg};padding:.25rem .55rem;border-radius:999px;margin:.15rem;font-size:.78rem;font-weight:700">{label}</span>' for label,bg,fg in legend])
-st.markdown(f'<div class="small"><b>Leyenda visual:</b> {legend_html}</div>', unsafe_allow_html=True)
+if active_section == 'Tienda individual':
+    st.markdown('<div class="section-band"><div><h2>Resumen de la red</h2><p>Lectura rápida del estado operativo y financiero de la vista actual</p></div></div>', unsafe_allow_html=True)
+    status_counts = book['ESTADO_NORMALIZADO'].value_counts()
+    total = len(book)
+    latest = ventas['FECHA'].max() if not ventas.empty else None
+    latest_sales = ventas[ventas['FECHA'] == latest] if latest is not None else ventas
+    avg_sales = latest_sales['VENTAS'].mean() if not latest_sales.empty else 0
+    avg_con = con[con['FECHA'] == latest]['CONTRIBUCION'].mean() if latest is not None and not con.empty else 0
+    u6m_sales = pd.to_numeric(book.get('VU6M', pd.Series(dtype=float)), errors='coerce').mean()
+    u6m_con = pd.to_numeric(book.get('CONTRIBUCION U6M', pd.Series(dtype=float)), errors='coerce').mean()
+    sales_delta = pct_change(avg_sales, u6m_sales)
+    con_delta = pct_change(avg_con, u6m_con)
+    latest_label = latest.strftime('%b %Y').upper() if latest is not None else 'SIN PERIODO'
+    st.markdown(f'<div style="display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap;margin:-.25rem 0 .85rem"><span class="small">Vista filtrada · {total:,} tiendas · periodo de referencia {latest_label}</span><span class="refresh-chip">● Datos listos para análisis</span></div>', unsafe_allow_html=True)
+    indicators = [
+        ('Tiendas', total, None, False),
+        ('Abiertas', int(status_counts.get('ABIERTA', 0)), None, False),
+        ('Cerradas', int(status_counts.get('CERRADA', 0)), None, False),
+        ('En obra', int(status_counts.get('EN OBRA', 0)), None, False),
+        ('Firmadas', int(status_counts.get('FIRMADA', 0)), None, False),
+        ('Venta último mes', avg_sales, sales_delta, True),
+        ('Contribución último mes', avg_con, con_delta, True),
+        ('Venta promedio U6M', u6m_sales, None, True),
+    ]
+    st.markdown('##### Indicadores de cobertura')
+    count_cols = st.columns(5)
+    for col, (label, value, delta, money) in zip(count_cols, indicators[:5]):
+        share = '100.0% del total' if label == 'Tiendas' else f'{value / max(total, 1):.1%} del total'
+        col.markdown(f'<div class="kpi"><div class="small">{label}</div><h3>{display_value(value, money)}</h3><div class="small">{share}</div></div>', unsafe_allow_html=True)
+    st.markdown('##### Indicadores financieros')
+    financial_cols = st.columns(3)
+    for col, (label, value, delta, money) in zip(financial_cols, indicators[5:]):
+        delta_text = f'{delta:+.1%} vs U6M' if delta is not None else ''
+        col.markdown(f'<div class="kpi"><div class="small">{label}</div><h3>{display_value(value, money)}</h3><div class="small">{delta_text}</div></div>', unsafe_allow_html=True)
 
-# Health ribbon: a network-level reading of the new visual language.
-energy_overview = book.apply(lambda row: energy_profile(row), axis=1, result_type='expand') if not book.empty else pd.DataFrame()
-if not energy_overview.empty:
-    energy_overview.columns = ['ENERGIA_CLASE','ENERGIA_LABEL','ENERGIA_NOTA','ENERGIA_RAZONES','ENERGIA_VS_U6M']
-    energy_counts = energy_overview['ENERGIA_CLASE'].value_counts()
-    high_count = int(energy_counts.get('energy-high', 0)); mid_count = int(energy_counts.get('energy-mid', 0)); low_count = int(energy_counts.get('energy-low', 0))
-    st.markdown(f'''<div class="energy-ribbon"><div class="energy-ribbon-main"><div class="ribbon-label">SALUD DE LA VISTA</div><div class="ribbon-value">{len(book):,} tiendas activas</div><div class="ribbon-note">Clasificación por ventas, contribución y estado</div></div><div class="energy-ribbon-card good"><div class="ribbon-label">Alta energía</div><div class="ribbon-value">{high_count:,}</div><div class="ribbon-note">Impulsores de la red</div></div><div class="energy-ribbon-card mid"><div class="ribbon-label">Estables</div><div class="ribbon-value">{mid_count:,}</div><div class="ribbon-note">Monitoreo normal</div></div><div class="energy-ribbon-card low"><div class="ribbon-label">Atención</div><div class="ribbon-value">{low_count:,}</div><div class="ribbon-note">Prioridad de revisión</div></div></div>''', unsafe_allow_html=True)
+    st.markdown('#### Capas independientes de clasificación')
+    layer_cols = st.columns(3)
+    for col, title, label_col, bg_col, fg_col in zip(
+        layer_cols,
+        ['Estado operativo', 'Segmentación', 'Formato / tipo'],
+        ['ESTADO_ETIQUETA', 'SEGMENTO_VISUAL', 'FORMATO_VISUAL'],
+        ['ESTADO_COLOR', 'SEGMENTO_COLOR', 'FORMATO_COLOR'],
+        ['ESTADO_TEXTO', 'SEGMENTO_TEXTO', 'FORMATO_TEXTO'],
+    ):
+        counts = book[label_col].value_counts().rename_axis('Etiqueta').reset_index(name='Tiendas')
+        col.markdown(f'**{title}**')
+        for _, item in counts.head(8).iterrows():
+            label = item['Etiqueta']
+            sample = book[book[label_col].eq(label)].iloc[0]
+            bg, fg = sample[bg_col], sample[fg_col]
+            share = int(item['Tiendas']) / max(total, 1)
+            col.markdown(f'<div class="layer-plate" style="display:flex;justify-content:space-between;align-items:center;background:{bg};color:{fg};font-weight:650"><span>{label}</span><span>{int(item["Tiendas"]):,} <small>({share:.1%})</small></span></div>', unsafe_allow_html=True)
+    legend = [('ABIERTA','#111111','#FFFFFF'),('FIRMADA','#98A2B3','#101828'),('EN OBRA','#D9F3FF','#0077B6'),('CERRADA','#D92D20','#FFFFFF'),('(BA)','#D6BBFB','#3B0764'),('-R','#54208A','#FFFFFF'),('TMCB','#E31B23','#FFD400'),('EXP','#003B73','#FFFFFF'),('RECESO','#B42318','#FFFFFF'),('HOGAR','#111111','#FFFFFF'),('BASE','#FFD400','#111111')]
+    legend_html = ' '.join([f'<span style="display:inline-block;background:{bg};color:{fg};padding:.25rem .55rem;border-radius:999px;margin:.15rem;font-size:.78rem;font-weight:700">{label}</span>' for label,bg,fg in legend])
+    st.markdown(f'<div class="small"><b>Leyenda visual:</b> {legend_html}</div>', unsafe_allow_html=True)
 
-# Explorador de tienda inspirado en la hoja INICIO de Book.
-st.markdown('<div class="section-kicker">Consulta individual</div>', unsafe_allow_html=True)
-st.subheader('Ficha de tienda')
-st.caption('Filtra por CR o nombre en la barra lateral y selecciona una tienda para ver su placa operativa completa.')
-store_options = book[['CR','NAME']].fillna('').drop_duplicates('CR').sort_values(['NAME','CR'])
-store_labels = [f"{r.CR} — {r.NAME}" for r in store_options.itertuples()]
-selected_label = st.selectbox('Selecciona una tienda', store_labels, index=0 if store_labels else None, placeholder='Escribe para buscar una tienda…', key='selected_store')
-if not store_labels:
-    st.info('No hay tiendas que coincidan con los filtros actuales. Ajusta la búsqueda o limpia algún filtro.')
-elif selected_label:
-    selected_cr = selected_label.split(' — ', 1)[0]
-    selected = book[book['CR'].astype(str) == selected_cr].iloc[0]
-    selected_state = selected.get('ESTADO_NORMALIZADO', 'SIN ESTADO')
-    selected_sales = ventas[ventas['CR'].astype(str) == selected_cr].sort_values('FECHA')
-    selected_con = con[con['CR'].astype(str) == selected_cr].sort_values('FECHA') if not con.empty else pd.DataFrame()
-    last_sale = selected_sales.iloc[-1] if not selected_sales.empty else None
-    prev_sale = selected_sales.iloc[-2] if len(selected_sales) > 1 else None
-    change = pct_change(last_sale['VENTAS'], prev_sale['VENTAS']) if last_sale is not None and prev_sale is not None else None
-    status_label, status_bg, status_fg = status_profile(selected)
-    modifier_label, modifier_bg, modifier_fg = modifier_profile(selected)
-    segment_label, segment_bg, segment_fg = segment_profile(selected)
-    format_label, format_bg, format_fg = format_profile(selected)
-    badges = f'<span class="badge" style="background:{status_bg};color:{status_fg}">{status_label}</span>'
-    if modifier_label:
-        badges += f' <span class="badge" style="background:{modifier_bg};color:{modifier_fg}">{modifier_label}</span>'
-    badges += f' <span class="badge" style="background:{segment_bg};color:{segment_fg}">SEG: {segment_label}</span>'
-    badges += f' <span class="badge" style="background:{format_bg};color:{format_fg}">TIPO: {format_label}</span>'
-    mesop_raw = selected.get('MESOP', 'ND')
-    try:
-        mesop_num = float(mesop_raw)
-        if pd.isna(mesop_num): raise ValueError
-        mesop_display = f'{mesop_num:,.0f}'; mesop_color = '#B7791F' if mesop_num > 100 else '#344054'; mesop_note = 'MESOP > 100' if mesop_num > 100 else 'MESOP'
-    except (TypeError, ValueError):
-        mesop_display = str(mesop_raw); mesop_color = '#667085'; mesop_note = 'MESOP'
-    energy_class, energy_label, energy_note, energy_reasons, vs_u6m = energy_profile(selected, change)
-    energy_reason_text = ' · '.join(energy_reasons) if energy_reasons else 'Sin variación suficiente para clasificar'
-    st.markdown('#### Placa de energía comercial')
-    st.markdown('<div class="energy-key"><span class="energy-dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>Buen desempeño / luminoso <span class="energy-dot" style="background:#fbbf24"></span>Estable <span class="energy-dot" style="background:#64748b"></span>Requiere atención / opaco</div>', unsafe_allow_html=True)
-    sales_display = display_value(selected.get('VENTAS OUM'), True)
-    contrib_display = display_value(selected.get('CONTRIBUCION UM'), True)
-    change_display = f'{change:+.1%}' if change is not None else 'Sin dato'
-    vs_u6m_display = f'{vs_u6m:+.1%}' if vs_u6m is not None else 'Sin dato'
-    ficha_html = f'''<div class="energy-card {energy_class}"><div class="energy-head"><div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div></div><div class="energy-note">{energy_note} · {energy_reason_text}</div></div>'''
-    ficha_left, ficha_right = st.columns([3.8, 1.15])
-    with ficha_left:
-        st.markdown(ficha_html, unsafe_allow_html=True)
-    with ficha_right:
-        st.markdown(f'''<div class="mesop-card"><div class="small">{mesop_note}</div><div class="mesop-number" style="color:{mesop_color}">{mesop_display}</div><div class="small">Indicador MESOP de Book</div></div>''', unsafe_allow_html=True)
-    st.markdown('#### Indicadores rápidos')
-    fact_cols = st.columns(6)
-    area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))
-    facts = [('Apertura', selected.get('FECHA APE','Sin dato'), False), ('Área venta', area_value, False), ('Tráfico UM', selected.get('TRAFICO UM','Sin dato'), False), ('Ticket UM', selected.get('TICKET UM','Sin dato'), True), ('Ventas UM', selected.get('VENTAS OUM','Sin dato'), True), ('Contribución UM', selected.get('CONTRIBUCION UM','Sin dato'), True)]
-    for col, (label, value, money) in zip(fact_cols, facts):
-        if isinstance(value, pd.Timestamp): value = value.strftime('%d/%m/%Y')
-        col.markdown(f'<div class="fact"><div class="fact-label">{label}</div><div class="fact-value">{display_value(value, money)}</div></div>', unsafe_allow_html=True)
-    st.markdown('#### Desempeño operativo')
-    m1,m2,m3,m4 = st.columns(4)
-    m1.metric('Venta último mes', display_value(last_sale['VENTAS'], True) if last_sale is not None else 'Sin dato', f'{change:.1%}' if change is not None else None)
-    m2.metric('Margen UM', display_value(selected.get('MARGEN UM'), True))
-    m3.metric('Renta UM', display_value(selected.get('RENTA'), True))
-    m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
-    # Ficha interactiva completa: toda la fila original de Book/JUN, organizada por temas y con búsqueda.
-    st.markdown('#### Centro de datos de la tienda')
-    st.markdown('<div class="store-data-hint">Explora la información por categoría o entra en “Todos los datos” para consultar cada columna original de esta tienda.</div>', unsafe_allow_html=True)
-    def value_for_table(value):
-        if pd.isna(value): return 'Sin dato'
-        if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
-        return str(value)
+    # Health ribbon: a network-level reading of the new visual language.
+    energy_overview = book.apply(lambda row: energy_profile(row), axis=1, result_type='expand') if not book.empty else pd.DataFrame()
+    if not energy_overview.empty:
+        energy_overview.columns = ['ENERGIA_CLASE','ENERGIA_LABEL','ENERGIA_NOTA','ENERGIA_RAZONES','ENERGIA_VS_U6M']
+        energy_counts = energy_overview['ENERGIA_CLASE'].value_counts()
+        high_count = int(energy_counts.get('energy-high', 0)); mid_count = int(energy_counts.get('energy-mid', 0)); low_count = int(energy_counts.get('energy-low', 0))
+        st.markdown(f'''<div class="energy-ribbon"><div class="energy-ribbon-main"><div class="ribbon-label">SALUD DE LA VISTA</div><div class="ribbon-value">{len(book):,} tiendas activas</div><div class="ribbon-note">Clasificación por ventas, contribución y estado</div></div><div class="energy-ribbon-card good"><div class="ribbon-label">Alta energía</div><div class="ribbon-value">{high_count:,}</div><div class="ribbon-note">Impulsores de la red</div></div><div class="energy-ribbon-card mid"><div class="ribbon-label">Estables</div><div class="ribbon-value">{mid_count:,}</div><div class="ribbon-note">Monitoreo normal</div></div><div class="energy-ribbon-card low"><div class="ribbon-label">Atención</div><div class="ribbon-value">{low_count:,}</div><div class="ribbon-note">Prioridad de revisión</div></div></div>''', unsafe_allow_html=True)
 
-    raw_fields = pd.DataFrame({'Campo': [str(c) for c in selected.index], 'Valor': [value_for_table(v) for v in selected.values]})
-    def fields_by_keywords(keywords):
-        mask = raw_fields['Campo'].str.upper().apply(lambda name: any(k in name for k in keywords))
-        return raw_fields[mask].copy()
+    # Explorador de tienda inspirado en la hoja INICIO de Book.
+    st.markdown('<div class="section-kicker">Consulta individual</div>', unsafe_allow_html=True)
+    st.subheader('Ficha de tienda')
+    st.caption('Filtra por CR o nombre en la barra lateral y selecciona una tienda para ver su placa operativa completa.')
+    store_options = book[['CR','NAME']].fillna('').drop_duplicates('CR').sort_values(['NAME','CR'])
+    store_labels = [f"{r.CR} — {r.NAME}" for r in store_options.itertuples()]
+    selected_label = st.selectbox('Selecciona una tienda', store_labels, index=0 if store_labels else None, placeholder='Escribe para buscar una tienda…', key='selected_store')
+    if not store_labels:
+        st.info('No hay tiendas que coincidan con los filtros actuales. Ajusta la búsqueda o limpia algún filtro.')
+    elif selected_label:
+        selected_cr = selected_label.split(' — ', 1)[0]
+        selected = book[book['CR'].astype(str) == selected_cr].iloc[0]
+        selected_state = selected.get('ESTADO_NORMALIZADO', 'SIN ESTADO')
+        selected_sales = ventas[ventas['CR'].astype(str) == selected_cr].sort_values('FECHA')
+        selected_con = con[con['CR'].astype(str) == selected_cr].sort_values('FECHA') if not con.empty else pd.DataFrame()
+        last_sale = selected_sales.iloc[-1] if not selected_sales.empty else None
+        prev_sale = selected_sales.iloc[-2] if len(selected_sales) > 1 else None
+        change = pct_change(last_sale['VENTAS'], prev_sale['VENTAS']) if last_sale is not None and prev_sale is not None else None
+        status_label, status_bg, status_fg = status_profile(selected)
+        modifier_label, modifier_bg, modifier_fg = modifier_profile(selected)
+        segment_label, segment_bg, segment_fg = segment_profile(selected)
+        format_label, format_bg, format_fg = format_profile(selected)
+        badges = f'<span class="badge" style="background:{status_bg};color:{status_fg}">{status_label}</span>'
+        if modifier_label:
+            badges += f' <span class="badge" style="background:{modifier_bg};color:{modifier_fg}">{modifier_label}</span>'
+        badges += f' <span class="badge" style="background:{segment_bg};color:{segment_fg}">SEG: {segment_label}</span>'
+        badges += f' <span class="badge" style="background:{format_bg};color:{format_fg}">TIPO: {format_label}</span>'
+        mesop_raw = selected.get('MESOP', 'ND')
+        try:
+            mesop_num = float(mesop_raw)
+            if pd.isna(mesop_num): raise ValueError
+            mesop_display = f'{mesop_num:,.0f}'; mesop_color = '#B7791F' if mesop_num > 100 else '#344054'; mesop_note = 'MESOP > 100' if mesop_num > 100 else 'MESOP'
+        except (TypeError, ValueError):
+            mesop_display = str(mesop_raw); mesop_color = '#667085'; mesop_note = 'MESOP'
+        energy_class, energy_label, energy_note, energy_reasons, vs_u6m = energy_profile(selected, change)
+        energy_reason_text = ' · '.join(energy_reasons) if energy_reasons else 'Sin variación suficiente para clasificar'
+        st.markdown('#### Placa de energía comercial')
+        st.markdown('<div class="energy-key"><span class="energy-dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>Buen desempeño / luminoso <span class="energy-dot" style="background:#fbbf24"></span>Estable <span class="energy-dot" style="background:#64748b"></span>Requiere atención / opaco</div>', unsafe_allow_html=True)
+        sales_display = display_value(selected.get('VENTAS OUM'), True)
+        contrib_display = display_value(selected.get('CONTRIBUCION UM'), True)
+        change_display = f'{change:+.1%}' if change is not None else 'Sin dato'
+        vs_u6m_display = f'{vs_u6m:+.1%}' if vs_u6m is not None else 'Sin dato'
+        ficha_html = f'''<div class="energy-card store-focus-card"><div class="energy-head"><div><div class="energy-name">{selected.get('NAME', 'Sin nombre')}</div><div class="energy-cr">CR {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div><div class="energy-status">{energy_label}</div></div><div class="energy-badges">{badges}</div><div class="energy-summary"><div class="energy-stat"><div class="energy-stat-label">VENTAS UM</div><div class="energy-stat-value">{sales_display}</div></div><div class="energy-stat"><div class="energy-stat-label">VS U6M</div><div class="energy-stat-value">{vs_u6m_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CAMBIO MENSUAL</div><div class="energy-stat-value">{change_display}</div></div><div class="energy-stat"><div class="energy-stat-label">CONTRIBUCIÓN UM</div><div class="energy-stat-value">{contrib_display}</div></div><div class="energy-stat"><div class="energy-stat-label">MARGEN UM</div><div class="energy-stat-value">{display_value(selected.get('MARGEN UM'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">RENTA UM</div><div class="energy-stat-value">{display_value(selected.get('RENTA'), True)}</div></div><div class="energy-stat"><div class="energy-stat-label">TRÁFICO UM</div><div class="energy-stat-value">{display_value(selected.get('TRAFICO UM'))}</div></div><div class="energy-stat"><div class="energy-stat-label">TICKET UM</div><div class="energy-stat-value">{display_value(selected.get('TICKET UM'), True)}</div></div></div><div class="energy-note">{energy_note} · {energy_reason_text}</div></div>'''
+        ficha_left, ficha_right = st.columns([3.8, 1.15])
+        with ficha_left:
+            st.markdown(ficha_html, unsafe_allow_html=True)
+        with ficha_right:
+            st.markdown(f'''<div class="mesop-card"><div class="small">{mesop_note}</div><div class="mesop-number" style="color:{mesop_color}">{mesop_display}</div><div class="small">Indicador MESOP de Book</div></div>''', unsafe_allow_html=True)
+        st.markdown('#### Indicadores rápidos')
+        fact_cols = st.columns(6)
+        area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))
+        facts = [('Apertura', selected.get('FECHA APE','Sin dato'), False), ('Área venta', area_value, False), ('Tráfico UM', selected.get('TRAFICO UM','Sin dato'), False), ('Ticket UM', selected.get('TICKET UM','Sin dato'), True), ('Ventas UM', selected.get('VENTAS OUM','Sin dato'), True), ('Contribución UM', selected.get('CONTRIBUCION UM','Sin dato'), True)]
+        for col, (label, value, money) in zip(fact_cols, facts):
+            if isinstance(value, pd.Timestamp): value = value.strftime('%d/%m/%Y')
+            col.markdown(f'<div class="fact"><div class="fact-label">{label}</div><div class="fact-value">{display_value(value, money)}</div></div>', unsafe_allow_html=True)
+        st.markdown('#### Desempeño operativo')
+        m1,m2,m3,m4 = st.columns(4)
+        m1.metric('Venta último mes', display_value(last_sale['VENTAS'], True) if last_sale is not None else 'Sin dato', f'{change:.1%}' if change is not None else None)
+        m2.metric('Margen UM', display_value(selected.get('MARGEN UM'), True))
+        m3.metric('Renta UM', display_value(selected.get('RENTA'), True))
+        m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
+        # Ficha interactiva completa: toda la fila original de Book/JUN, organizada por temas y con búsqueda.
+        st.markdown('#### Centro de datos de la tienda')
+        st.markdown('<div class="store-data-hint">Explora la información por categoría o entra en “Todos los datos” para consultar cada columna original de esta tienda.</div>', unsafe_allow_html=True)
+        def value_for_table(value):
+            if pd.isna(value): return 'Sin dato'
+            if isinstance(value, pd.Timestamp): return value.strftime('%d/%m/%Y')
+            return str(value)
 
-    identity_fields = fields_by_keywords(['CR','NAME','ESTADO','SEG26','TIE26','DISTINTIVO','ENERGIA'])
-    location_fields = fields_by_keywords(['ZONA','DEPARTAMENTO','MUN','UPZ','COMUNA','ESTRATO','DIRECCION','BARRIO','LOCALIDAD','Y','X','COORD'])
-    finance_fields = fields_by_keywords(['VENTA','CONTRIB','MARGEN','RENTA','TICKET','BATTING','MESOP','U6M','UM','TRAFICO','TRU6'])
-    operation_fields = fields_by_keywords(['FECHA','APERT','AREA','PISO','TIPO','PARQUE','GENERADOR','FORMATO','LOCAL','OPER'])
-    categorized = set(identity_fields['Campo']) | set(location_fields['Campo']) | set(finance_fields['Campo']) | set(operation_fields['Campo'])
-    other_fields = raw_fields[~raw_fields['Campo'].isin(categorized)].copy()
+        raw_fields = pd.DataFrame({'Campo': [str(c) for c in selected.index], 'Valor': [value_for_table(v) for v in selected.values]})
+        def fields_by_keywords(keywords):
+            mask = raw_fields['Campo'].str.upper().apply(lambda name: any(k in name for k in keywords))
+            return raw_fields[mask].copy()
 
-    data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad','Todos los datos'])
-    with data_tabs[0]:
-        summary_cols = st.columns(3)
-        summary_cols[0].metric('Campos disponibles', f'{len(raw_fields):,}')
-        summary_cols[1].metric('Datos con valor', f'{int((raw_fields.Valor != "Sin dato").sum()):,}')
-        summary_cols[2].metric('CR de tienda', str(selected.get('CR', selected_cr)))
-        st.dataframe(identity_fields if not identity_fields.empty else raw_fields.head(12), hide_index=True, use_container_width=True, height=360)
-    with data_tabs[1]:
-        op_left, op_right = st.columns(2)
-        with op_left:
-            st.markdown('**Ubicación y clasificación**')
-            st.dataframe(location_fields if not location_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
-        with op_right:
-            st.markdown('**Operación y apertura**')
-            st.dataframe(operation_fields if not operation_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
-    with data_tabs[2]:
-        st.markdown('**Indicadores comerciales y financieros disponibles en Book/JUN**')
-        st.dataframe(finance_fields if not finance_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=480)
-    with data_tabs[3]:
-        search_fields = st.text_input('Buscar dentro de todos los datos', placeholder='Ej. renta, municipio, área, fecha…', key=f'field_search_{selected_cr}')
-        all_data = raw_fields.copy()
-        if search_fields:
-            q = search_fields.strip().lower()
-            all_data = all_data[all_data.astype(str).apply(lambda col: col.str.lower().str.contains(q, na=False)).any(axis=1)]
-        st.caption(f'Mostrando {len(all_data):,} de {len(raw_fields):,} campos originales de la tienda.')
-        st.dataframe(all_data, hide_index=True, use_container_width=True, height=520)
-        st.download_button('Descargar ficha completa de esta tienda', raw_fields.to_csv(index=False).encode('utf-8-sig'), f'ficha_tienda_{selected_cr}.csv', 'text/csv', key=f'download_store_{selected_cr}')
-    if not selected_sales.empty:
-        chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})
-        if not selected_con.empty:
-            chart_data = chart_data.merge(selected_con[['FECHA','CONTRIBUCION']].rename(columns={'CONTRIBUCION':'Contribución'}), on='FECHA', how='left')
-        st.plotly_chart(px.line(chart_data, x='FECHA', y=[c for c in ['Ventas','Contribución'] if c in chart_data], markers=True, title=f'Histórico de {selected.get("NAME", selected_cr)}'), use_container_width=True)
+        identity_fields = fields_by_keywords(['CR','NAME','ESTADO','SEG26','TIE26','DISTINTIVO','ENERGIA'])
+        location_fields = fields_by_keywords(['ZONA','DEPARTAMENTO','MUN','UPZ','COMUNA','ESTRATO','DIRECCION','BARRIO','LOCALIDAD','Y','X','COORD'])
+        finance_fields = fields_by_keywords(['VENTA','CONTRIB','MARGEN','RENTA','TICKET','BATTING','MESOP','U6M','UM','TRAFICO','TRU6'])
+        operation_fields = fields_by_keywords(['FECHA','APERT','AREA','PISO','TIPO','PARQUE','GENERADOR','FORMATO','LOCAL','OPER'])
+        categorized = set(identity_fields['Campo']) | set(location_fields['Campo']) | set(finance_fields['Campo']) | set(operation_fields['Campo'])
+        other_fields = raw_fields[~raw_fields['Campo'].isin(categorized)].copy()
+
+        data_tabs = st.tabs(['Resumen','Ubicación y operación','Ventas y rentabilidad','Todos los datos'])
+        with data_tabs[0]:
+            summary_cols = st.columns(3)
+            summary_cols[0].metric('Campos disponibles', f'{len(raw_fields):,}')
+            summary_cols[1].metric('Datos con valor', f'{int((raw_fields.Valor != "Sin dato").sum()):,}')
+            summary_cols[2].metric('CR de tienda', str(selected.get('CR', selected_cr)))
+            st.dataframe(identity_fields if not identity_fields.empty else raw_fields.head(12), hide_index=True, use_container_width=True, height=360)
+        with data_tabs[1]:
+            op_left, op_right = st.columns(2)
+            with op_left:
+                st.markdown('**Ubicación y clasificación**')
+                st.dataframe(location_fields if not location_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
+            with op_right:
+                st.markdown('**Operación y apertura**')
+                st.dataframe(operation_fields if not operation_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=420)
+        with data_tabs[2]:
+            st.markdown('**Indicadores comerciales y financieros disponibles en Book/JUN**')
+            st.dataframe(finance_fields if not finance_fields.empty else raw_fields.head(1), hide_index=True, use_container_width=True, height=480)
+        with data_tabs[3]:
+            search_fields = st.text_input('Buscar dentro de todos los datos', placeholder='Ej. renta, municipio, área, fecha…', key=f'field_search_{selected_cr}')
+            all_data = raw_fields.copy()
+            if search_fields:
+                q = search_fields.strip().lower()
+                all_data = all_data[all_data.astype(str).apply(lambda col: col.str.lower().str.contains(q, na=False)).any(axis=1)]
+            st.caption(f'Mostrando {len(all_data):,} de {len(raw_fields):,} campos originales de la tienda.')
+            st.dataframe(all_data, hide_index=True, use_container_width=True, height=520)
+            st.download_button('Descargar ficha completa de esta tienda', raw_fields.to_csv(index=False).encode('utf-8-sig'), f'ficha_tienda_{selected_cr}.csv', 'text/csv', key=f'download_store_{selected_cr}')
+        if not selected_sales.empty:
+            chart_data = selected_sales[['FECHA','VENTAS']].copy().rename(columns={'VENTAS':'Ventas'})
+            if not selected_con.empty:
+                chart_data = chart_data.merge(selected_con[['FECHA','CONTRIBUCION']].rename(columns={'CONTRIBUCION':'Contribución'}), on='FECHA', how='left')
+            st.plotly_chart(px.line(chart_data, x='FECHA', y=[c for c in ['Ventas','Contribución'] if c in chart_data], markers=True, title=f'Histórico de {selected.get("NAME", selected_cr)}'), use_container_width=True)
 
 # Tabs
 if active_section == 'Resumen operativo':

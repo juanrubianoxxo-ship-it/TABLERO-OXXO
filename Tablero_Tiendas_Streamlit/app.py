@@ -4,7 +4,8 @@ import streamlit as st
 from src.analysis import load_book, load_book_sheets, load_libro_sheets, historic_to_long, merge_book_status, sudden_alerts, status_bucket
 from src.onedrive import download_excel
 
-st.set_page_config(page_title='Control de tiendas', page_icon='📊', layout='wide')
+st.set_page_config(page_title='OXXO · Control Room', page_icon='📊', layout='wide')
+px.defaults.template = 'plotly_white'
 
 st.markdown('''<style>
 .block-container{padding-top:1.1rem;padding-bottom:2.5rem}.stTabs [data-baseweb=tab-list]{gap:.35rem}.stTabs [data-baseweb=tab]{padding:.65rem .95rem;border-radius:10px 10px 0 0;font-weight:650}.stTabs [aria-selected="true"]{background:#eef4ff;color:#175cd3}.section-kicker{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#667085;font-weight:750;margin:.8rem 0 .25rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#101828;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
@@ -12,8 +13,26 @@ st.markdown('''<style>
 .store-card{padding:1.1rem 1.25rem;border-radius:16px;border:1px solid #d0d5dd;background:linear-gradient(135deg,#ffffff,#f8fafc);box-shadow:0 10px 26px rgba(16,24,40,.12), inset 0 1px 0 rgba(255,255,255,.95);margin:.35rem 0 1rem}
 .store-title{font-size:1.35rem;font-weight:750;color:#101828;margin:0}.store-subtitle{color:#667085;margin:.2rem 0 .7rem}.badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;color:#fff;font-weight:700;font-size:.82rem;box-shadow:0 3px 8px rgba(16,24,40,.16)}.fact{padding:.65rem .8rem;background:#f8fafc;border-radius:9px;border:1px solid #eaecf0;box-shadow:0 4px 12px rgba(16,24,40,.06)}.fact-label{font-size:.76rem;color:#667085}.fact-value{font-weight:650;color:#101828;margin-top:.15rem}.mesop-card{height:100%;padding:1rem;border-radius:16px;text-align:center;background:linear-gradient(145deg,#fffdf5,#fff7d6);border:1px solid #f2c94c;box-shadow:0 10px 26px rgba(242,183,5,.22), inset 0 1px 0 rgba(255,255,255,.9)}.mesop-number{font-size:3.2rem;line-height:1;font-weight:850;color:#9a6700;margin:.6rem 0}.energy-card{position:relative;overflow:hidden;padding:1.35rem 1.45rem;border-radius:22px;margin:.45rem 0 1rem;border:1px solid var(--energy-border);background:var(--energy-bg);color:var(--energy-text);box-shadow:var(--energy-shadow);transition:transform .2s ease,box-shadow .2s ease}.energy-card:hover{transform:translateY(-3px);box-shadow:var(--energy-shadow-hover)}.energy-card::after{content:'';position:absolute;top:-70px;right:-45px;width:190px;height:190px;border-radius:50%;background:var(--energy-orb);filter:blur(2px);opacity:.65}.energy-card.energy-high{--energy-border:#86efac;--energy-bg:linear-gradient(135deg,#062e24 0%,#0b5d45 52%,#0f8f67 100%);--energy-text:#ecfdf5;--energy-shadow:0 0 0 1px rgba(52,211,153,.16),0 0 25px rgba(16,185,129,.42),0 14px 32px rgba(6,78,59,.3);--energy-shadow-hover:0 0 0 1px rgba(134,239,172,.3),0 0 38px rgba(16,185,129,.65),0 18px 38px rgba(6,78,59,.38);--energy-orb:radial-gradient(circle,#86efac 0%,rgba(52,211,153,.24) 36%,transparent 70%)}.energy-card.energy-mid{--energy-border:#fcd34d;--energy-bg:linear-gradient(135deg,#33200a 0%,#755116 58%,#a86f13 100%);--energy-text:#fffbeb;--energy-shadow:0 0 0 1px rgba(251,191,36,.12),0 0 18px rgba(245,158,11,.24),0 14px 30px rgba(92,50,4,.24);--energy-shadow-hover:0 0 0 1px rgba(252,211,77,.22),0 0 27px rgba(245,158,11,.4),0 18px 35px rgba(92,50,4,.32);--energy-orb:radial-gradient(circle,#fde68a 0%,rgba(251,191,36,.18) 38%,transparent 70%)}.energy-card.energy-low{--energy-border:#64748b;--energy-bg:linear-gradient(135deg,#202938 0%,#364152 58%,#475569 100%);--energy-text:#e2e8f0;--energy-shadow:0 8px 20px rgba(15,23,42,.26);--energy-shadow-hover:0 10px 24px rgba(15,23,42,.34);--energy-orb:radial-gradient(circle,#94a3b8 0%,rgba(100,116,139,.12) 38%,transparent 70%)}.energy-head{position:relative;z-index:1;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.energy-name{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}.energy-cr{font-size:.8rem;opacity:.8;margin-top:.18rem}.energy-status{display:inline-block;padding:.42rem .72rem;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.12);font-size:.74rem;font-weight:800;letter-spacing:.06em;white-space:nowrap}.energy-badges{position:relative;z-index:1;margin:.85rem 0 .65rem}.energy-badges .badge{box-shadow:0 2px 9px rgba(0,0,0,.2)}.energy-summary{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-top:.75rem}.energy-stat{padding:.65rem .75rem;border-radius:12px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12)}.energy-stat-label{font-size:.7rem;opacity:.78}.energy-stat-value{font-size:1.08rem;font-weight:800;margin-top:.15rem}.energy-note{position:relative;z-index:1;margin-top:.8rem;font-size:.8rem;opacity:.88}.energy-key{display:flex;gap:.55rem;align-items:center;flex-wrap:wrap;margin:.2rem 0 1rem;color:#667085;font-size:.8rem}.energy-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.signal-list{max-height:520px;overflow-y:auto;padding-right:.25rem}
 </style>''', unsafe_allow_html=True)
-st.title('Control integral de tiendas')
-st.caption('Centro de control retail · Book (JUN) + LibroVentas · Fuente única: OneDrive/SharePoint.')
+
+st.markdown('''<style>
+:root{--ink:#14213d;--muted:#64748b;--line:#dbe3ef;--navy:#0b1736;--blue:#2563eb;--cyan:#06b6d4;--surface:#ffffff}
+.stApp{background:#f3f6fb}.block-container{max-width:1500px;padding-left:2.2rem;padding-right:2.2rem}
+[data-testid=stSidebar]{background:linear-gradient(180deg,#0b1736 0%,#101f48 56%,#162b5b 100%);border-right:1px solid #253b6e}
+[data-testid=stSidebar] *{color:#e7eefc} [data-testid=stSidebar] .stCaption{color:#a9badb}
+[data-testid=stSidebar] input,[data-testid=stSidebar] textarea,[data-testid=stSidebar] [data-baseweb=select]>div{background:#142653!important;border-color:#37518a!important;color:#f8fbff!important}
+[data-testid=stSidebar] [data-baseweb=multi-select] span{background:#264582!important;color:#f8fbff!important;border-color:#5272b4!important}
+[data-testid=stSidebar] hr{border-color:#314879}.stButton>button{border-radius:10px;border:1px solid #cbd5e1}
+.dashboard-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,#0b1736 0%,#15336b 58%,#087e9c 100%);border-radius:24px;padding:1.55rem 1.8rem;margin:.25rem 0 1.35rem;color:white;box-shadow:0 18px 40px rgba(20,55,110,.2)}.dashboard-hero:after{content:'';position:absolute;right:-50px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(103,232,249,.42),transparent 68%)}.hero-eyebrow{position:relative;z-index:1;letter-spacing:.14em;text-transform:uppercase;font-size:.7rem;color:#8be9fa;font-weight:800}.hero-title{position:relative;z-index:1;font-size:2.2rem;line-height:1.05;font-weight:850;letter-spacing:-.045em;margin:.35rem 0}.hero-copy{position:relative;z-index:1;color:#c8d7f4;font-size:.93rem;max-width:730px;margin:0}.hero-meta{position:relative;z-index:1;display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.05rem}.hero-pill{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);padding:.35rem .65rem;border-radius:999px;font-size:.75rem;color:#e8f2ff}
+.section-band{display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--line);margin:1.5rem 0 .85rem;padding-bottom:.55rem}.section-band h2{font-size:1.2rem;color:var(--ink);margin:0}.section-band p{font-size:.78rem;color:var(--muted);margin:0}.overview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:.8rem 0 1rem}.overview-tile{padding:1rem 1.05rem;border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 7px 18px rgba(20,45,90,.07)}.overview-tile .tile-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:750}.overview-tile .tile-value{font-size:1.55rem;font-weight:850;color:var(--ink);margin:.28rem 0}.overview-tile .tile-note{font-size:.75rem;color:var(--muted)}.overview-tile.good{border-top:4px solid #10b981}.overview-tile.warn{border-top:4px solid #f59e0b}.overview-tile.risk{border-top:4px solid #64748b}.overview-tile.blue{border-top:4px solid #2563eb}
+.energy-ribbon{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:.75rem;margin:1rem 0 1.25rem}.energy-ribbon-main,.energy-ribbon-card{border-radius:16px;padding:1rem 1.1rem;color:#fff;min-height:96px}.energy-ribbon-main{background:linear-gradient(135deg,#0b1736,#1d4ed8)}.energy-ribbon-card{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:0 7px 18px rgba(20,45,90,.06)}.ribbon-label{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;opacity:.78}.ribbon-value{font-size:1.65rem;font-weight:850;margin:.25rem 0}.ribbon-note{font-size:.76rem;opacity:.76}.energy-ribbon-card.good{border-left:5px solid #10b981}.energy-ribbon-card.mid{border-left:5px solid #f59e0b}.energy-ribbon-card.low{border-left:5px solid #64748b}
+[data-testid=stMetric]{background:#fff;border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;box-shadow:0 5px 16px rgba(20,45,90,.05)}[data-testid=stMetricLabel]{color:var(--muted)!important}[data-testid=stMetricValue]{color:var(--ink)!important}
+.stTabs [data-baseweb=tab-list]{background:#e8eef8;border-radius:14px;padding:.28rem;gap:.25rem}.stTabs [data-baseweb=tab]{border-radius:10px;padding:.7rem .9rem;color:#52627e;font-size:.82rem;font-weight:750}.stTabs [aria-selected=true]{background:#fff;color:#1d4ed8;box-shadow:0 3px 10px rgba(37,99,235,.14)}
+[data-testid=stExpander]{border:1px solid var(--line);border-radius:14px;background:#fff}.stDataFrame{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+@media(max-width:900px){.overview-grid,.energy-ribbon{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:1.7rem}.block-container{padding-left:1rem;padding-right:1rem}}
+</style>''', unsafe_allow_html=True)
+
+st.markdown('''<div class="dashboard-hero"><div class="hero-eyebrow">OXXO · RETAIL CONTROL ROOM</div><div class="hero-title">Pulso de la red de tiendas</div><p class="hero-copy">Una vista operativa para detectar dónde está el crecimiento, qué tiendas necesitan atención y cómo se mueve el negocio mes a mes.</p><div class="hero-meta"><span class="hero-pill">Book / JUN</span><span class="hero-pill">LibroVentas</span><span class="hero-pill">Actualización automática desde OneDrive</span></div></div>''', unsafe_allow_html=True)
+
 
 
 def secret_value(name: str):
@@ -123,7 +142,9 @@ def fetch_from_onedrive(url: str) -> bytes:
     return download_excel(url).getvalue()
 
 with st.sidebar:
-    st.header('1. Fuente de datos')
+    st.markdown('### OXXO / CONTROL ROOM')
+    st.caption('Panel operativo de tiendas')
+    st.header('Conexión de datos')
     book_url = secret_value('ONEDRIVE_BOOK_URL')
     sales_url = secret_value('ONEDRIVE_SALES_URL')
     st.caption('Fuente única: OneDrive/SharePoint')
@@ -138,7 +159,7 @@ with st.sidebar:
     else:
         st.warning('Faltan ONEDRIVE_BOOK_URL y/o ONEDRIVE_SALES_URL en Secrets.')
     st.divider()
-    st.header('Alertas')
+    st.header('Sensibilidad de alertas')
     pct = st.slider('Cambio mínimo contra mes previo', 0.05, 1.0, 0.25, 0.05)
     zthr = st.slider('Z-score mínimo contra ventana de 6 meses', 1.0, 4.0, 2.0, 0.25)
     minval = st.number_input('Venta mínima para comparar', min_value=0, value=1000, step=500)
@@ -165,7 +186,7 @@ book[['FORMATO_VISUAL','FORMATO_COLOR','FORMATO_TEXTO']] = book.apply(lambda row
 
 # Filters
 with st.sidebar:
-    st.header('2. Filtros')
+    st.header('Explorar la red')
     store_query = st.text_input('Buscar tienda por CR o nombre', placeholder='Ej. 1234 o Reforma', key='store_query')
     def choose(column, label):
         if column not in book: return []
@@ -193,7 +214,7 @@ with st.sidebar:
         needle = store_query.strip().lower()
         search_mask = book[['CR', 'NAME']].fillna('').astype(str).apply(lambda col: col.str.lower().str.contains(needle, na=False)).any(axis=1)
         book = book[search_mask]
-    st.caption(f'Filtros activos: {len(book):,} tiendas' + (f' · búsqueda: “{store_query}”' if store_query else ''))
+    st.caption(f'Vista actual · {len(book):,} tiendas' + (f' · búsqueda: “{store_query}”' if store_query else ''))
 
 ventas_sheet = next((k for k in sheets if str(k).upper() == 'HISTORICO VENTAS'), None)
 con_sheet = next((k for k in sheets if str(k).upper() == 'HISTORICO CON'), None)
@@ -205,7 +226,7 @@ ventas = merge_book_status(book, sales_long)
 con = merge_book_status(book, historic_to_long(sheets[con_sheet], 'CONTRIBUCION')) if con_sheet else pd.DataFrame()
 
 # Overview
-st.subheader('Resumen ejecutivo')
+st.markdown('<div class="section-band"><div><h2>Resumen de la red</h2><p>Lectura rápida del estado operativo y financiero de la vista actual</p></div></div>', unsafe_allow_html=True)
 status_counts = book['ESTADO_NORMALIZADO'].value_counts()
 total = len(book)
 latest = ventas['FECHA'].max() if not ventas.empty else None
@@ -257,6 +278,14 @@ for col, title, label_col, bg_col, fg_col in zip(
 legend = [('ABIERTA','#111111','#FFFFFF'),('FIRMADA','#98A2B3','#101828'),('EN OBRA','#D9F3FF','#0077B6'),('CERRADA','#D92D20','#FFFFFF'),('(BA)','#D6BBFB','#3B0764'),('-R','#54208A','#FFFFFF'),('TMCB','#E31B23','#FFD400'),('EXP','#003B73','#FFFFFF'),('RECESO','#B42318','#FFFFFF'),('HOGAR','#111111','#FFFFFF'),('BASE','#FFD400','#111111')]
 legend_html = ' '.join([f'<span style="display:inline-block;background:{bg};color:{fg};padding:.25rem .55rem;border-radius:999px;margin:.15rem;font-size:.78rem;font-weight:700">{label}</span>' for label,bg,fg in legend])
 st.markdown(f'<div class="small"><b>Leyenda visual:</b> {legend_html}</div>', unsafe_allow_html=True)
+
+# Health ribbon: a network-level reading of the new visual language.
+energy_overview = book.apply(lambda row: energy_profile(row), axis=1, result_type='expand') if not book.empty else pd.DataFrame()
+if not energy_overview.empty:
+    energy_overview.columns = ['ENERGIA_CLASE','ENERGIA_LABEL','ENERGIA_NOTA','ENERGIA_RAZONES','ENERGIA_VS_U6M']
+    energy_counts = energy_overview['ENERGIA_CLASE'].value_counts()
+    high_count = int(energy_counts.get('energy-high', 0)); mid_count = int(energy_counts.get('energy-mid', 0)); low_count = int(energy_counts.get('energy-low', 0))
+    st.markdown(f'''<div class="energy-ribbon"><div class="energy-ribbon-main"><div class="ribbon-label">SALUD DE LA VISTA</div><div class="ribbon-value">{len(book):,} tiendas activas</div><div class="ribbon-note">Clasificación por ventas, contribución y estado</div></div><div class="energy-ribbon-card good"><div class="ribbon-label">Alta energía</div><div class="ribbon-value">{high_count:,}</div><div class="ribbon-note">Impulsores de la red</div></div><div class="energy-ribbon-card mid"><div class="ribbon-label">Estables</div><div class="ribbon-value">{mid_count:,}</div><div class="ribbon-note">Monitoreo normal</div></div><div class="energy-ribbon-card low"><div class="ribbon-label">Atención</div><div class="ribbon-value">{low_count:,}</div><div class="ribbon-note">Prioridad de revisión</div></div></div>''', unsafe_allow_html=True)
 
 # Explorador de tienda inspirado en la hoja INICIO de Book.
 st.markdown('<div class="section-kicker">Consulta individual</div>', unsafe_allow_html=True)
@@ -332,8 +361,9 @@ elif selected_label:
         st.plotly_chart(px.line(chart_data, x='FECHA', y=[c for c in ['Ventas','Contribución'] if c in chart_data], markers=True, title=f'Histórico de {selected.get("NAME", selected_cr)}'), use_container_width=True)
 
 # Tabs
-t1,t2,t3,t4,t5,t6 = st.tabs(['Cobertura y operación','Ventas y contribución','Alertas y señales','Base de tiendas','Calidad de datos','Comparar tiendas'])
+t1,t2,t3,t4,t5,t6 = st.tabs(['01 · Cobertura','02 · Finanzas','03 · Señales','04 · Tiendas','05 · Calidad','06 · Comparar'])
 with t1:
+    st.markdown('<div class="section-band"><div><h2>Mapa operativo</h2><p>Distribución, cobertura y productividad por clasificación</p></div></div>', unsafe_allow_html=True)
     c1,c2 = st.columns(2)
     with c1:
         st.markdown('#### Estado de tiendas')
@@ -393,6 +423,7 @@ with t1:
         st.dataframe(risk[[c for c in ['CR','NAME','ESTADO_ETIQUETA','DISTINTIVO','SEGMENTO_VISUAL','FORMATO_VISUAL','VENTA_VS_U6M','VENTAS OUM','VU6M','RENTABILIDAD_NETA'] if c in risk]].style.format({'VENTA_VS_U6M':'{:+.1%}','VENTAS OUM':'${:,.0f}','VU6M':'${:,.0f}','RENTABILIDAD_NETA':'${:,.0f}'}), use_container_width=True, hide_index=True)
 
 with t2:
+    st.markdown('<div class="section-band"><div><h2>Desempeño financiero</h2><p>Evolución mensual, ranking y lectura por zona</p></div></div>', unsafe_allow_html=True)
     metric = st.selectbox('Métrica histórica', ['VENTAS','CONTRIBUCION'])
     data = ventas if metric == 'VENTAS' else con
     if data.empty: st.warning('No hay datos disponibles para esta métrica.')
@@ -411,6 +442,7 @@ with t2:
             st.plotly_chart(px.bar(byz, x='ZONA', y=metric, title=f'{metric.title()} promedio por zona'), use_container_width=True)
 
 with t3:
+    st.markdown('<div class="section-band"><div><h2>Radar de señales</h2><p>Detecta aceleraciones, caídas y tiendas que piden revisión</p></div></div>', unsafe_allow_html=True)
     st.markdown('#### Mercado de tiendas — señales de movimiento')
     st.caption('Cada tienda se comporta como un indicador: subió, bajó o se mantuvo estable frente al último mes disponible. La señal combina variación mensual y desviación frente a su histórico.')
     trend = ventas.sort_values(['CR','FECHA']).copy()
@@ -479,6 +511,7 @@ with t3:
         st.download_button('Descargar señales detectadas CSV', latest_alerts[show].to_csv(index=False).encode('utf-8-sig'), 'alertas_tiendas.csv', 'text/csv')
 
 with t4:
+    st.markdown('<div class="section-band"><div><h2>Directorio operativo</h2><p>Consulta, filtra y descarga la base de tiendas</p></div></div>', unsafe_allow_html=True)
     st.markdown('#### Base filtrada de tiendas · Book / JUN')
     q=st.text_input('Buscar por CR o nombre')
     detail=book.copy()
@@ -502,6 +535,7 @@ with t4:
     st.download_button('Descargar detalle filtrado CSV', detail.to_csv(index=False).encode('utf-8-sig'), 'detalle_tiendas.csv', 'text/csv')
 
 with t5:
+    st.markdown('<div class="section-band"><div><h2>Calidad y cobertura</h2><p>Confianza en fuentes, campos y periodos disponibles</p></div></div>', unsafe_allow_html=True)
     st.markdown('#### Validaciones y cobertura')
     st.markdown('##### Hojas detectadas')
     book_sheet_rows = [{'Fuente': 'Book', 'Hoja': str(name), 'Filas': len(frame), 'Columnas': len(frame.columns)} for name, frame in book_sheets.items()]
@@ -522,6 +556,7 @@ with t5:
     st.write(f'Filas Book/JUN: **{len(book):,}** · Tiendas con históricos de ventas: **{ventas.CR.nunique():,}** · CR duplicados: **{duplicate_cr:,}** · Periodo: **{ventas.FECHA.min():%b %Y} a {ventas.FECHA.max():%b %Y}**')
 
 with t6:
+    st.markdown('<div class="section-band"><div><h2>Comparador de tiendas</h2><p>Contrasta hasta ocho tiendas con la misma métrica</p></div></div>', unsafe_allow_html=True)
     st.markdown('#### Comparar tiendas lado a lado')
     st.caption('Selecciona dos o más tiendas para comparar su evolución histórica y sus indicadores actuales. Los filtros de la barra lateral se respetan.')
     versus_options = book[['CR','NAME']].fillna('').drop_duplicates('CR').sort_values(['NAME','CR'])

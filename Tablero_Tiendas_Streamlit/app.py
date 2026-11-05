@@ -711,8 +711,13 @@ if active_section == 'Comparador':
             vs_text = f'{vs_row:+.1%}' if vs_row is not None else 'Sin dato'
             status_text = str(store.get('ESTADO_NORMALIZADO', store.get('ESTADO', 'Sin estado')))
             plate_cols[idx % 4].markdown(f'<div class="compare-plate {rank_class}"><div class="compare-plate-rank">{rank_code}</div><div class="compare-plate-name">{escape(str(store.get("NAME", cr)))}</div><div class="compare-plate-meta">CR {escape(cr)} · {escape(status_text)}</div><div class="compare-plate-kpis"><span>Ventas OUM<br><b>{escape(sales_text)}</b></span><span>Vs U6M<br><b>{escape(vs_text)}</b></span></div></div>', unsafe_allow_html=True)
-            if plate_cols[idx % 4].button('Abrir placa', key=f'compare_plate_{cr}', use_container_width=True):
+            if plate_cols[idx % 4].button('Abrir y comparar', key=f'compare_plate_{cr}', use_container_width=True):
                 st.session_state['compare_focus_cr'] = cr
+                current_labels = list(st.session_state.get('versus_stores', []))
+                store_label = f"{cr} — {store.get('NAME', '')}"
+                if store_label not in current_labels and len(current_labels) < 8:
+                    current_labels.append(store_label)
+                st.session_state['versus_stores'] = current_labels
 
         focus_cr = st.session_state.get('compare_focus_cr')
         if focus_cr and focus_cr in set(book['CR'].astype(str)):
@@ -726,6 +731,8 @@ if active_section == 'Comparador':
             focus_vs_text = f'{focus_vs:+.1%}' if focus_vs is not None else 'Sin dato'
             st.markdown(f'''<div class="compare-focus {focus_class}"><div class="compare-focus-top"><div><div class="compare-focus-label">TIENDA SELECCIONADA · CATEGORÍA {focus_code}</div><div class="compare-focus-name">{escape(str(focus.get('NAME', focus_cr)))}</div><div class="compare-focus-meta">CR {escape(focus_cr)} · {escape(str(focus.get('ZONA', 'Sin zona')))} · {escape(str(focus.get('MUN', 'Sin municipio')))}</div></div><div class="compare-focus-category">{escape(focus_label)}</div></div><div class="compare-focus-grid"><span>Ventas OUM<br><b>{escape(focus_sales)}</b></span><span>Vs U6M<br><b>{escape(focus_vs_text)}</b></span><span>Contribución UM<br><b>{escape(focus_con)}</b></span><span>Margen UM<br><b>{escape(focus_margin)}</b></span><span>Renta UM<br><b>{escape(focus_rent)}</b></span><span>MESOP<br><b>{escape(focus_mesop)}</b></span></div><div class="compare-focus-note">{escape(focus_note)}</div></div>''', unsafe_allow_html=True)
 
+        current_compare_count = len(st.session_state.get('versus_stores', []))
+        st.caption(f'{current_compare_count}/8 tiendas seleccionadas. Puedes hacer clic en otra placa para agregarla automáticamente.')
         selected_versus = st.multiselect('Selecciona las tiendas a comparar', versus_labels, max_selections=8, key='versus_stores')
         if len(selected_versus) < 2:
             st.info('Selecciona al menos dos tiendas para activar la comparación.')

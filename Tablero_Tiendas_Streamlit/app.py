@@ -193,6 +193,7 @@ with st.sidebar:
         values = sorted(v for v in book[column].dropna().astype(str).unique() if v.strip())
         return st.multiselect(label, values, key=f'filter_{column}')
 
+    selected_statuses = choose('ESTADO_NORMALIZADO', 'Estado operativo')
     selected_segments = choose('SEGMENTO_VISUAL', 'Segmento: BASE / HOGAR / RECESO')
     selected_generations = choose('TIE26', 'Generación')
     selected_departments = choose('DEPARTAMENTO', 'Departamento')
@@ -203,6 +204,7 @@ with st.sidebar:
     selected_local_types = choose('TIPO DE LOCAL', 'Tipo de local')
 
     filters = {
+        'ESTADO_NORMALIZADO': selected_statuses,
         'SEGMENTO_VISUAL': selected_segments, 'TIE26': selected_generations,
         'DEPARTAMENTO': selected_departments, 'MUN': selected_municipalities,
         'ESTRATO': selected_strata, 'GENERADOR': selected_generator,

@@ -7,13 +7,13 @@ from src.onedrive import download_excel
 st.set_page_config(page_title='Control de tiendas', page_icon='📊', layout='wide')
 
 st.markdown('''<style>
-.block-container{padding-top:1.4rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#101828;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
+.block-container{padding-top:1.1rem;padding-bottom:2.5rem}.stTabs [data-baseweb=tab-list]{gap:.35rem}.stTabs [data-baseweb=tab]{padding:.65rem .95rem;border-radius:10px 10px 0 0;font-weight:650}.stTabs [aria-selected="true"]{background:#eef4ff;color:#175cd3}.section-kicker{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:#667085;font-weight:750;margin:.8rem 0 .25rem}.kpi{padding:1rem 1.1rem;border-radius:.9rem;background:linear-gradient(145deg,#ffffff 0%,#f5f7fb 62%,#eaf2ff 100%);border:1px solid #e1e7f0;box-shadow:0 8px 22px rgba(55,89,140,.12), inset 0 1px 0 rgba(255,255,255,.95);min-height:124px}.kpi h3,.kpi h2{margin:.45rem 0;color:#101828;font-size:1.55rem;white-space:nowrap}.small{color:#667085;font-size:.85rem}
 .layer-plate{padding:.6rem .75rem;border-radius:10px;margin:.35rem 0;box-shadow:0 5px 14px rgba(16,24,40,.13), inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s ease}.layer-plate:hover{transform:translateY(-2px)}
 .store-card{padding:1.1rem 1.25rem;border-radius:16px;border:1px solid #d0d5dd;background:linear-gradient(135deg,#ffffff,#f8fafc);box-shadow:0 10px 26px rgba(16,24,40,.12), inset 0 1px 0 rgba(255,255,255,.95);margin:.35rem 0 1rem}
 .store-title{font-size:1.35rem;font-weight:750;color:#101828;margin:0}.store-subtitle{color:#667085;margin:.2rem 0 .7rem}.badge{display:inline-block;padding:.3rem .7rem;border-radius:999px;color:#fff;font-weight:700;font-size:.82rem;box-shadow:0 3px 8px rgba(16,24,40,.16)}.fact{padding:.65rem .8rem;background:#f8fafc;border-radius:9px;border:1px solid #eaecf0;box-shadow:0 4px 12px rgba(16,24,40,.06)}.fact-label{font-size:.76rem;color:#667085}.fact-value{font-weight:650;color:#101828;margin-top:.15rem}.mesop-card{height:100%;padding:1rem;border-radius:16px;text-align:center;background:linear-gradient(145deg,#fffdf5,#fff7d6);border:1px solid #f2c94c;box-shadow:0 10px 26px rgba(242,183,5,.22), inset 0 1px 0 rgba(255,255,255,.9)}.mesop-number{font-size:3.2rem;line-height:1;font-weight:850;color:#9a6700;margin:.6rem 0}.signal-list{max-height:520px;overflow-y:auto;padding-right:.25rem}
 </style>''', unsafe_allow_html=True)
 st.title('Control integral de tiendas')
-st.caption('Análisis de Book (hoja JUN) y LibroVentas. Fuente única: OneDrive/SharePoint.')
+st.caption('Centro de control retail · Book (JUN) + LibroVentas · Fuente única: OneDrive/SharePoint.')
 
 
 def secret_value(name: str):
@@ -140,6 +140,7 @@ book[['FORMATO_VISUAL','FORMATO_COLOR','FORMATO_TEXTO']] = book.apply(lambda row
 # Filters
 with st.sidebar:
     st.header('2. Filtros')
+    store_query = st.text_input('Buscar tienda por CR o nombre', placeholder='Ej. 1234 o Reforma', key='store_query')
     def choose(column, label):
         if column not in book: return []
         values = sorted(v for v in book[column].dropna().astype(str).unique() if v.strip())
@@ -162,7 +163,11 @@ with st.sidebar:
     }
     for column, values in filters.items():
         if values: book = book[book[column].astype(str).isin(values)]
-    st.caption(f'Filtros activos: {len(book):,} tiendas')
+    if store_query:
+        needle = store_query.strip().lower()
+        search_mask = book[['CR', 'NAME']].fillna('').astype(str).apply(lambda col: col.str.lower().str.contains(needle, na=False)).any(axis=1)
+        book = book[search_mask]
+    st.caption(f'Filtros activos: {len(book):,} tiendas' + (f' · búsqueda: “{store_query}”' if store_query else ''))
 
 ventas_sheet = next((k for k in sheets if str(k).upper() == 'HISTORICO VENTAS'), None)
 con_sheet = next((k for k in sheets if str(k).upper() == 'HISTORICO CON'), None)
@@ -228,11 +233,15 @@ legend_html = ' '.join([f'<span style="display:inline-block;background:{bg};colo
 st.markdown(f'<div class="small"><b>Leyenda visual:</b> {legend_html}</div>', unsafe_allow_html=True)
 
 # Explorador de tienda inspirado en la hoja INICIO de Book.
-st.subheader('Explorador interactivo de tiendas')
+st.markdown('<div class="section-kicker">Consulta individual</div>', unsafe_allow_html=True)
+st.subheader('Ficha de tienda')
+st.caption('Filtra por CR o nombre en la barra lateral y selecciona una tienda para ver su placa operativa completa.')
 store_options = book[['CR','NAME']].fillna('').drop_duplicates('CR').sort_values(['NAME','CR'])
 store_labels = [f"{r.CR} — {r.NAME}" for r in store_options.itertuples()]
-selected_label = st.selectbox('Busca y selecciona una tienda por CR o nombre', store_labels, index=0 if store_labels else None)
-if selected_label:
+selected_label = st.selectbox('Selecciona una tienda', store_labels, index=0 if store_labels else None, placeholder='Escribe para buscar una tienda…', key='selected_store')
+if not store_labels:
+    st.info('No hay tiendas que coincidan con los filtros actuales. Ajusta la búsqueda o limpia algún filtro.')
+elif selected_label:
     selected_cr = selected_label.split(' — ', 1)[0]
     selected = book[book['CR'].astype(str) == selected_cr].iloc[0]
     selected_state = selected.get('ESTADO_NORMALIZADO', 'SIN ESTADO')
@@ -262,18 +271,20 @@ if selected_label:
         st.markdown(f'''<div class="store-card" style="border-left:8px solid {status_bg}"><div class="store-title">{selected.get('NAME', 'Sin nombre')} {badges}</div><div class="store-subtitle">CR: {selected_cr} · {selected.get('ZONA','Sin zona')} · {selected.get('MUN','Sin municipio')}</div></div>''', unsafe_allow_html=True)
     with ficha_right:
         st.markdown(f'''<div class="mesop-card"><div class="small">{mesop_note}</div><div class="mesop-number" style="color:{mesop_color}">{mesop_display}</div><div class="small">Indicador MESOP de Book</div></div>''', unsafe_allow_html=True)
+    st.markdown('#### Indicadores rápidos')
     fact_cols = st.columns(6)
     area_value = selected.get('PISO DE VENTA', selected.get('AREA PISO DE VENTA', selected.get('AREA', 'Sin dato')))
     facts = [('Apertura', selected.get('FECHA APE','Sin dato'), False), ('Área venta', area_value, False), ('Tráfico UM', selected.get('TRAFICO UM','Sin dato'), False), ('Ticket UM', selected.get('TICKET UM','Sin dato'), True), ('Ventas UM', selected.get('VENTAS OUM','Sin dato'), True), ('Contribución UM', selected.get('CONTRIBUCION UM','Sin dato'), True)]
     for col, (label, value, money) in zip(fact_cols, facts):
         if isinstance(value, pd.Timestamp): value = value.strftime('%d/%m/%Y')
         col.markdown(f'<div class="fact"><div class="fact-label">{label}</div><div class="fact-value">{display_value(value, money)}</div></div>', unsafe_allow_html=True)
+    st.markdown('#### Desempeño operativo')
     m1,m2,m3,m4 = st.columns(4)
     m1.metric('Venta último mes', display_value(last_sale['VENTAS'], True) if last_sale is not None else 'Sin dato', f'{change:.1%}' if change is not None else None)
     m2.metric('Margen UM', display_value(selected.get('MARGEN UM'), True))
     m3.metric('Renta UM', display_value(selected.get('RENTA'), True))
     m4.metric('Batting', f"{float(selected.get('%BATTING')):.1%}" if pd.notna(selected.get('%BATTING')) else 'Sin dato')
-    with st.expander('Ver ficha completa tipo INICIO', expanded=False):
+    with st.expander('Ver ficha completa · todos los datos de la tienda', expanded=False):
         left, right = st.columns(2)
         left_fields = ['CR','ESTADO_NORMALIZADO','ZONA','DEPARTAMENTO','MUN','UPZ/COMUNA','ESTRATO','TIPO DE LOCAL','PARQUEADERO','SEG26','TIE26']
         right_fields = ['TRAFICO UM','TRU6','TICKET UM','TICKET U6M','VENTAS OUM','VU6M','CONTRIBUCION UM','CONTRIBUCION U6M','MARGEN UM','MARGEN U6M','RENTA','RU6M']
@@ -286,7 +297,7 @@ if selected_label:
         st.plotly_chart(px.line(chart_data, x='FECHA', y=[c for c in ['Ventas','Contribución'] if c in chart_data], markers=True, title=f'Histórico de {selected.get("NAME", selected_cr)}'), use_container_width=True)
 
 # Tabs
-t1,t2,t3,t4,t5,t6 = st.tabs(['Estados y cobertura','Ventas y contribución','Alertas','Detalle de tiendas','Calidad de datos','Versus'])
+t1,t2,t3,t4,t5,t6 = st.tabs(['Cobertura y operación','Ventas y contribución','Alertas y señales','Base de tiendas','Calidad de datos','Comparar tiendas'])
 with t1:
     c1,c2 = st.columns(2)
     with c1:
@@ -394,19 +405,23 @@ with t3:
         fig.update_xaxes(tickformat='.0%')
         fig.update_layout(height=460, legend_title_text='Señal')
         st.plotly_chart(fig, use_container_width=True)
-    selected_ticker = st.selectbox('Selecciona una tienda para ver su ficha bursátil', [f"{r.CR} — {r.NAME}" for r in snapshot[['CR','NAME']].fillna('').sort_values('NAME').itertuples()])
-    ticker_cr = selected_ticker.split(' — ', 1)[0]
-    ticker_row = snapshot[snapshot['CR'].astype(str) == ticker_cr].iloc[0]
-    direction = ticker_row['DIRECCION']; direction_color = {'SUBIÓ':'#12B76A','BAJÓ':'#F04438','ESTABLE':'#667085'}[direction]
-    arrow = ticker_row['SEÑAL']; variation = ticker_row['CAMBIO_PCT']
-    st.markdown(f'<div class="store-card" style="border-left:8px solid {direction_color}"><div class="store-title">{ticker_row.get("NAME", ticker_cr)} <span class="badge" style="background:{direction_color};color:#FFFFFF">{arrow} {direction}</span></div><div class="store-subtitle">CR: {ticker_cr} · Variación último mes: <b>{variation:+.1%}</b> · Venta actual: <b>{display_value(ticker_row["VENTAS"], True)}</b></div></div>', unsafe_allow_html=True)
-    ticker_history = ventas[ventas['CR'].astype(str) == ticker_cr].sort_values('FECHA').copy()
-    if not ticker_history.empty:
-        ticker_history['MEDIA_6M'] = ticker_history['VENTAS'].rolling(6, min_periods=1).mean()
-        fig2 = px.line(ticker_history, x='FECHA', y=['VENTAS','MEDIA_6M'], markers=True, title=f'Precio histórico de ventas — {ticker_row.get("NAME", ticker_cr)}')
-        fig2.update_traces(selector={'name':'VENTAS'}, line_color=direction_color, line_width=3)
-        fig2.update_layout(legend_title_text='Indicador')
-        st.plotly_chart(fig2, use_container_width=True)
+    ticker_options = [f"{r.CR} — {r.NAME}" for r in snapshot[['CR','NAME']].fillna('').sort_values('NAME').itertuples()]
+    if not ticker_options:
+        st.info('No hay señales suficientes para mostrar una ficha individual con los umbrales actuales.')
+    else:
+        selected_ticker = st.selectbox('Selecciona una tienda para ver su ficha bursátil', ticker_options)
+        ticker_cr = selected_ticker.split(' — ', 1)[0]
+        ticker_row = snapshot[snapshot['CR'].astype(str) == ticker_cr].iloc[0]
+        direction = ticker_row['DIRECCION']; direction_color = {'SUBIÓ':'#12B76A','BAJÓ':'#F04438','ESTABLE':'#667085'}[direction]
+        arrow = ticker_row['SEÑAL']; variation = ticker_row['CAMBIO_PCT']
+        st.markdown(f'<div class="store-card" style="border-left:8px solid {direction_color}"><div class="store-title">{ticker_row.get("NAME", ticker_cr)} <span class="badge" style="background:{direction_color};color:#FFFFFF">{arrow} {direction}</span></div><div class="store-subtitle">CR: {ticker_cr} · Variación último mes: <b>{variation:+.1%}</b> · Venta actual: <b>{display_value(ticker_row["VENTAS"], True)}</b></div></div>', unsafe_allow_html=True)
+        ticker_history = ventas[ventas['CR'].astype(str) == ticker_cr].sort_values('FECHA').copy()
+        if not ticker_history.empty:
+            ticker_history['MEDIA_6M'] = ticker_history['VENTAS'].rolling(6, min_periods=1).mean()
+            fig2 = px.line(ticker_history, x='FECHA', y=['VENTAS','MEDIA_6M'], markers=True, title=f'Precio histórico de ventas — {ticker_row.get("NAME", ticker_cr)}')
+            fig2.update_traces(selector={'name':'VENTAS'}, line_color=direction_color, line_width=3)
+            fig2.update_layout(legend_title_text='Indicador')
+            st.plotly_chart(fig2, use_container_width=True)
     rank_up, rank_down = st.columns(2)
     with rank_up:
         st.markdown(f'#### Mayores subidas ({up:,})')
@@ -429,7 +444,7 @@ with t3:
         st.download_button('Descargar señales detectadas CSV', latest_alerts[show].to_csv(index=False).encode('utf-8-sig'), 'alertas_tiendas.csv', 'text/csv')
 
 with t4:
-    st.markdown('#### Base de tiendas — Book / JUN')
+    st.markdown('#### Base filtrada de tiendas · Book / JUN')
     q=st.text_input('Buscar por CR o nombre')
     detail=book.copy()
     if q:
@@ -472,7 +487,7 @@ with t5:
     st.write(f'Filas Book/JUN: **{len(book):,}** · Tiendas con históricos de ventas: **{ventas.CR.nunique():,}** · CR duplicados: **{duplicate_cr:,}** · Periodo: **{ventas.FECHA.min():%b %Y} a {ventas.FECHA.max():%b %Y}**')
 
 with t6:
-    st.markdown('#### Versus — comparación de tiendas')
+    st.markdown('#### Comparar tiendas lado a lado')
     st.caption('Selecciona dos o más tiendas para comparar su evolución histórica y sus indicadores actuales. Los filtros de la barra lateral se respetan.')
     versus_options = book[['CR','NAME']].fillna('').drop_duplicates('CR').sort_values(['NAME','CR'])
     versus_labels = [f"{r.CR} — {r.NAME}" for r in versus_options.itertuples()]

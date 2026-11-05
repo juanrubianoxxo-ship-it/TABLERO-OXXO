@@ -141,6 +141,43 @@ def display_value(value, money=False):
 def fetch_from_onedrive(url: str) -> bytes:
     return download_excel(url).getvalue()
 
+
+# Cargar y transformar una vez por versión de los archivos; los filtros usan estas copias.
+@st.cache_data(ttl=600, show_spinner='Leyendo Book…')
+def load_book_cached(uploaded: bytes) -> pd.DataFrame:
+    return load_book(uploaded)
+
+
+@st.cache_data(ttl=600, show_spinner='Inventariando hojas de Book…')
+def load_book_sheets_cached(uploaded: bytes) -> dict:
+    return load_book_sheets(uploaded)
+
+
+@st.cache_data(ttl=600, show_spinner='Leyendo hojas de ventas…')
+def load_libro_sheets_cached(uploaded: bytes) -> dict:
+    return load_libro_sheets(uploaded)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def historic_to_long_cached(frame: pd.DataFrame, metric_name: str) -> pd.DataFrame:
+    return historic_to_long(frame, metric_name)
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def decorate_book_cached(raw_book: pd.DataFrame) -> pd.DataFrame:
+    book = raw_book.copy()
+    book['ESTADO_NORMALIZADO'] = book.get('ESTADO', pd.Series('', index=book.index)).map(status_bucket)
+    book[['ESTADO_ETIQUETA','ESTADO_COLOR','ESTADO_TEXTO']] = book.apply(lambda row: pd.Series(status_profile(row)), axis=1)
+    book[['DISTINTIVO','DISTINTIVO_COLOR','DISTINTIVO_TEXTO']] = book.apply(lambda row: pd.Series(modifier_profile(row)), axis=1)
+    book[['SEGMENTO_VISUAL','SEGMENTO_COLOR','SEGMENTO_TEXTO']] = book.apply(lambda row: pd.Series(segment_profile(row)), axis=1)
+    book[['FORMATO_VISUAL','FORMATO_COLOR','FORMATO_TEXTO']] = book.apply(lambda row: pd.Series(format_profile(row)), axis=1)
+    return book
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def merge_book_status_cached(book_frame: pd.DataFrame, long_frame: pd.DataFrame) -> pd.DataFrame:
+    return merge_book_status(book_frame, long_frame)
+
 with st.sidebar:
     st.markdown('### OXXO / CONTROL ROOM')
     st.caption('Panel operativo de tiendas')
@@ -171,18 +208,13 @@ if not book_file or not sales_file:
     st.stop()
 
 try:
-    book = load_book(book_file)
-    book_sheets = load_book_sheets(book_file)
-    sheets = load_libro_sheets(sales_file)
+    book_all = decorate_book_cached(load_book_cached(book_file))
+    book = book_all.copy()
+    book_sheets = load_book_sheets_cached(book_file)
+    sheets = load_libro_sheets_cached(sales_file)
 except Exception as e:
     st.error(f'No se pudieron leer los archivos: {e}')
     st.stop()
-
-book['ESTADO_NORMALIZADO'] = book.get('ESTADO', pd.Series('', index=book.index)).map(status_bucket)
-book[['ESTADO_ETIQUETA','ESTADO_COLOR','ESTADO_TEXTO']] = book.apply(lambda row: pd.Series(status_profile(row)), axis=1)
-book[['DISTINTIVO','DISTINTIVO_COLOR','DISTINTIVO_TEXTO']] = book.apply(lambda row: pd.Series(modifier_profile(row)), axis=1)
-book[['SEGMENTO_VISUAL','SEGMENTO_COLOR','SEGMENTO_TEXTO']] = book.apply(lambda row: pd.Series(segment_profile(row)), axis=1)
-book[['FORMATO_VISUAL','FORMATO_COLOR','FORMATO_TEXTO']] = book.apply(lambda row: pd.Series(format_profile(row)), axis=1)
 
 # Filters
 with st.sidebar:
@@ -223,9 +255,12 @@ con_sheet = next((k for k in sheets if str(k).upper() == 'HISTORICO CON'), None)
 if not ventas_sheet:
     st.error('No se encontró la hoja HISTORICO VENTAS.')
     st.stop()
-sales_long = historic_to_long(sheets[ventas_sheet], 'VENTAS')
-ventas = merge_book_status(book, sales_long)
-con = merge_book_status(book, historic_to_long(sheets[con_sheet], 'CONTRIBUCION')) if con_sheet else pd.DataFrame()
+sales_long = historic_to_long_cached(sheets[ventas_sheet], 'VENTAS')
+ventas_all = merge_book_status_cached(book_all, sales_long)
+con_all = merge_book_status_cached(book_all, historic_to_long_cached(sheets[con_sheet], 'CONTRIBUCION')) if con_sheet else pd.DataFrame()
+visible_crs = set(book['CR'].astype(str))
+ventas = ventas_all[ventas_all['CR'].astype(str).isin(visible_crs)].copy()
+con = con_all[con_all['CR'].astype(str).isin(visible_crs)].copy() if not con_all.empty else pd.DataFrame()
 
 # Overview
 st.markdown('<div class="section-band"><div><h2>Resumen de la red</h2><p>Lectura rápida del estado operativo y financiero de la vista actual</p></div></div>', unsafe_allow_html=True)
